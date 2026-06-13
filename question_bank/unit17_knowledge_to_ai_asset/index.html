@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Unit17 四択問題集 | AIエージェント・ストラテジスト</title>
+  <style>
+    :root {
+      --bg:#f6f8fb; --panel:#fff; --text:#172033; --muted:#63708a; --line:#dfe6f1;
+      --blue:#2563eb; --blue2:#dbeafe; --green:#10b981; --green2:#dcfce7; --red:#ef4444; --red2:#fee2e2; --orange:#f59e0b;
+      --shadow:0 18px 50px rgba(16,24,40,.10); --radius:24px;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP",sans-serif;
+    }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)} body{overflow-x:hidden} button,input,select{font:inherit}
+    .app{width:min(1120px,100%);margin:0 auto;padding:20px clamp(14px,3vw,32px) 64px}
+    .hero{background:linear-gradient(135deg,#fff 0%,#eef5ff 56%,#f7fbff 100%);border:1px solid #e5edf8;border-radius:30px;padding:clamp(18px,4vw,34px);box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero:after{content:"";position:absolute;right:-70px;top:-80px;width:220px;height:220px;background:rgba(37,99,235,.10);border-radius:50%}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;padding:7px 12px;border-radius:999px;font-weight:800;font-size:13px}
+    h1{margin:16px 0 10px;font-size:clamp(26px,5.8vw,44px);line-height:1.12;letter-spacing:-.04em;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+    .lead{margin:0;color:var(--muted);font-size:clamp(15px,2vw,18px);line-height:1.75;max-width:780px;overflow-wrap:anywhere;word-break:break-word}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+    .stat{background:rgba(255,255,255,.78);border:1px solid #e5edf8;border-radius:18px;padding:12px;min-width:0}.stat b{display:block;font-size:22px;line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+    .progress-shell{height:10px;background:#e8eef8;border-radius:999px;overflow:hidden;margin-top:12px}.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#06b6d4);border-radius:999px;transition:width .2s}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}.control{flex:1 1 180px;min-width:0;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;color:var(--text)}
+    .btn{border:0;border-radius:16px;padding:13px 16px;background:#e8eef8;color:#1f2a44;font-weight:900;cursor:pointer;min-height:48px}.btn.primary{background:var(--blue);color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line)}.btn:active{transform:translateY(1px)}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:18px;align-items:start}
+    .focus-card,.list-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.focus-card{padding:clamp(18px,4vw,30px)}.list-panel{padding:18px}
+    .meta-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.pill{display:inline-flex;border-radius:999px;padding:7px 11px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:900}.pill.blue{background:var(--blue2);color:#1d4ed8}
+    .qtext{font-size:clamp(21px,5.2vw,32px);line-height:1.45;letter-spacing:-.02em;margin:10px 0 18px;font-weight:900;overflow-wrap:anywhere}
+    .choices{display:grid;gap:10px;margin-top:14px}.choice{width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 14px;min-height:58px;display:flex;gap:10px;align-items:flex-start;line-height:1.55;cursor:pointer}
+    .choice .label{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;background:#eef2ff;color:#1d4ed8;font-weight:900}.choice .txt{min-width:0;overflow-wrap:anywhere}
+    .choice.correct{border-color:#22c55e;background:var(--green2)}.choice.wrong{border-color:#f87171;background:var(--red2)}.choice.dim{opacity:.55}
+    .feedback{display:none;margin-top:16px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;line-height:1.75}.feedback.show{display:block}.feedback b.ok{color:#15803d}.feedback b.ng{color:#b91c1c}
+    .point{border-left:4px solid var(--green);padding-left:12px;color:#334155;margin-top:10px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .list-panel h2{margin:0 0 12px;font-size:20px}.cards{display:grid;gap:10px;max-height:620px;overflow:auto;padding-right:4px}
+    .mini{text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;cursor:pointer;min-width:0}.mini.done{border-color:#86efac;background:#f0fdf4}.mini.wrong{border-color:#fca5a5;background:#fff1f2}
+    .mini strong{display:block;font-size:14px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}.mini small{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;color:var(--muted)}
+    @media(max-width:760px){.app{padding:12px 12px 48px}.hero{border-radius:24px}.stats{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.control{flex-basis:100%}.btn{width:100%}.actions{grid-template-columns:1fr}.cards{max-height:none;overflow:visible}}
+    @media(max-width:430px){h1{font-size:clamp(24px,7.1vw,30px);line-height:1.18;letter-spacing:-.035em}.lead{font-size:14px}.hero{padding:18px 20px}}
+    @media(max-width:390px){.app{padding-left:10px;padding-right:10px}.hero,.focus-card,.list-panel{border-radius:20px}.stat b{font-size:20px}.choice{padding:13px 12px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="eyebrow">Unit17 · 四択問題集</div>
+      <h1>知識をAI活用資産へ変える考<br>え方</h1>
+      <p class="lead">スマホで解きやすい四択形式。選択するとすぐ正誤と解説が出ます。Unit17の講義ノート・理解度チェック・試験直前カードから20問に再構成。</p>
+      <div class="stats" aria-label="学習状況">
+        <div class="stat"><b id="statTotal">20</b><span>全問題</span></div><div class="stat"><b id="statCorrect">0</b><span>正解</span></div><div class="stat"><b id="statWrong">0</b><span>復習</span></div><div class="stat"><b id="statRate">0%</b><span>正答率</span></div>
+      </div>
+      <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+    <section class="toolbar" aria-label="操作">
+      <input class="control" id="searchBox" type="search" placeholder="検索：例 リスク / データ / KPI" />
+      <select class="control" id="tagFilter" aria-label="タグ絞り込み"><option value="all">すべてのタグ</option></select>
+      <button class="btn ghost" id="shuffleBtn" type="button">シャッフル</button>
+      <button class="btn ghost" id="resetBtn" type="button">記録リセット</button>
+    </section>
+    <section class="main-grid">
+      <article class="focus-card" aria-live="polite">
+        <div class="meta-row"><span class="pill blue" id="cardIndex">Q 1 / 20</span><span class="pill" id="cardTag">基本</span><span class="pill" id="cardLevel">基本</span></div>
+        <div class="qtext" id="questionText"></div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="actions"><button class="btn ghost" id="prevBtn" type="button">前へ</button><button class="btn primary" id="nextBtn" type="button">次へ</button></div>
+      </article>
+      <aside class="list-panel"><h2>全問リスト</h2><div class="cards" id="cardList"></div></aside>
+    </section>
+  </main>
+  <script>
+  const QUESTIONS = [
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "ベテラン営業担当者が「この顧客は決算前に大型発注する傾向がある」と判断できるが、根拠は文書化されていない。AIエージェントにこの判断を任せるため、最初に取り組むべきことはどれか。",
+    "options": [
+      "より高性能なLLMを導入する",
+      "ベテラン担当者の判断基準を文書化し、ナレッジベースに取り込む",
+      "過去の受注データをすべて入力し、自動学習に任せる",
+      "業務を録画し、AIエージェントに見せる"
+    ],
+    "correct": 1,
+    "explanation": "AIエージェントはナレッジベースにある形式知を参照できるが、担当者の頭の中にだけある暗黙知にはアクセスできない。",
+    "point": "ベテラン担当者の判断基準を文書化し、ナレッジベースに取り込む",
+    "id": "u17-001"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "ヘルプデスクAI向けに、ベテラン担当者の経験則を「VPN原因切り分けフロー」として文書化した。この活動はSECIモデルのどのフェーズに最も近いか。",
+    "options": [
+      "共同化",
+      "表出化",
+      "連結化",
+      "内面化"
+    ],
+    "correct": 1,
+    "explanation": "経験や勘として存在していた暗黙知を、フローチャートという形式知へ変換しているため、表出化に該当する。",
+    "point": "表出化",
+    "id": "u17-002"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "FAQ、ITマニュアル、対応履歴ログ、部署別トラブル表を統合して、AIエージェントのナレッジベースを構築した。この活動はどのフェーズに近いか。",
+    "options": [
+      "共同化",
+      "表出化",
+      "連結化",
+      "内面化"
+    ],
+    "correct": 2,
+    "explanation": "複数の形式知を組み合わせ、新しい知識基盤として統合しているため、連結化に該当する。",
+    "point": "連結化",
+    "id": "u17-003"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "AIエージェント稼働後、担当者が「AIがうまく対応できないパターン」を発見し、改善点をナレッジベースへ反映した。この活動は何にあたるか。",
+    "options": [
+      "実務で得た気づきを形式知へ変換する表出化",
+      "形式知が個人の感覚だけで共有される共同化",
+      "既存文書をまったく使わない内面化",
+      "モデル性能だけを高める最適化"
+    ],
+    "correct": 0,
+    "explanation": "現場で得た気づきを明文化し、ナレッジベースへ戻しているため、表出化として捉えられる。",
+    "point": "実務で得た気づきを形式知へ変換する表出化",
+    "id": "u17-004"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "ナレッジマネジメントで「早すぎる最適化」を避けるための適切な進め方はどれか。",
+    "options": [
+      "対象業務を決める前に全社知識を一気に整理する",
+      "まず高性能モデルを導入し、知識整備は後回しにする",
+      "解決すべき業務課題を定め、必要な知識から優先的に形式知化する",
+      "利用後のフィードバックを入れず、最初の設計だけで完成させる"
+    ],
+    "correct": 2,
+    "explanation": "対象範囲を限定して始め、利用を通じて追加・修正していく方が、導入までの時間を短縮しやすく、実務に合う精度改善につながる。",
+    "point": "解決すべき業務課題を定め、必要な知識から優先的に形式知化する",
+    "id": "u17-005"
+  },
+  {
+    "tag": "この講義で学ぶこと",
+    "level": "基本",
+    "question": "Unit17の「この講義で学ぶこと」で押さえるべき内容は？",
+    "options": [
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+      "最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+    "id": "u17-006"
+  },
+  {
+    "tag": "この講義で学ぶこと",
+    "level": "基本",
+    "question": "Unit17の「この講義で学ぶこと」で押さえるべき内容は？（確認7）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+    "id": "u17-007"
+  },
+  {
+    "tag": "この講義で学ぶこと",
+    "level": "基本",
+    "question": "Unit17の「この講義で学ぶこと」で押さえるべき内容は？（確認8）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+    "id": "u17-008"
+  },
+  {
+    "tag": "この講義で学ぶこと",
+    "level": "標準",
+    "question": "Unit17の「この講義で学ぶこと」で押さえるべき内容は？（確認9）",
+    "options": [
+      "最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。",
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "最初から全社知識を網羅せず、対象業務と頻度の高い課題から段階的に始める。",
+    "id": "u17-009"
+  },
+  {
+    "tag": "全体像",
+    "level": "標準",
+    "question": "Unit17の「全体像」で押さえるべき内容は？",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "AIエージェントは、組織の中にある知識を直接読むわけではない。参照できるのは、FAQ、手順書、対応履歴、フローチャート、部署別トラブル表など、検索・参照しやすい形に整えられた知識である。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「AIエージェントは、組織の中にある知識を直接読むわけではない。参照できるのは、FAQ、手順書、対応履歴、フローチャート、部署別トラブル表など、検索・参照しやすい形に整えられた知識である。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "AIエージェントは、組織の中にある知識を直接読むわけではない。参照できるのは、FAQ、手順書、対応履歴、フローチャート、部署別トラブル表など、検…",
+    "id": "u17-010"
+  },
+  {
+    "tag": "全体像",
+    "level": "標準",
+    "question": "Unit17の「全体像」で押さえるべき内容は？（確認11）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "そのため、ベテランの経験や勘をAIに使わせたい場合は、まず判断基準を外に出し、形式知として整える必要がある。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「そのため、ベテランの経験や勘をAIに使わせたい場合は、まず判断基準を外に出し、形式知として整える必要がある。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "そのため、ベテランの経験や勘をAIに使わせたい場合は、まず判断基準を外に出し、形式知として整える必要がある。",
+    "id": "u17-011"
+  },
+  {
+    "tag": "ヘルプデスクAIの例",
+    "level": "標準",
+    "question": "Unit17の「ヘルプデスクAIの例」で押さえるべき内容は？",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+      "ベテラン担当者は、次のような経験則を持っている。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「ベテラン担当者は、次のような経験則を持っている。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "ベテラン担当者は、次のような経験則を持っている。",
+    "id": "u17-012"
+  },
+  {
+    "tag": "ヘルプデスクAIの例",
+    "level": "標準",
+    "question": "Unit17の「ヘルプデスクAIの例」で押さえるべき内容は？（確認13）",
+    "options": [
+      "VPNのエラーメッセージから原因を推定する。",
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「VPNのエラーメッセージから原因を推定する。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "VPNのエラーメッセージから原因を推定する。",
+    "id": "u17-013"
+  },
+  {
+    "tag": "ヘルプデスクAIの例",
+    "level": "標準",
+    "question": "Unit17の「ヘルプデスクAIの例」で押さえるべき内容は？（確認14）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "特定部署からの問い合わせでは、ライセンス切れを疑う。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「特定部署からの問い合わせでは、ライセンス切れを疑う。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "特定部署からの問い合わせでは、ライセンス切れを疑う。",
+    "id": "u17-014"
+  },
+  {
+    "tag": "ヘルプデスクAIの例",
+    "level": "標準",
+    "question": "Unit17の「ヘルプデスクAIの例」で押さえるべき内容は？（確認15）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「パソコンが遅い」という相談では、バックグラウンド更新を確認する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「「パソコンが遅い」という相談では、バックグラウンド更新を確認する。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "「パソコンが遅い」という相談では、バックグラウンド更新を確認する。",
+    "id": "u17-015"
+  },
+  {
+    "tag": "ヘルプデスクAIの例",
+    "level": "標準",
+    "question": "Unit17の「ヘルプデスクAIの例」で押さえるべき内容は？（確認16）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+      "これらは担当者の頭の中にある暗黙知であり、そのままではAIも新人も参照できない。退職や異動があると失われるおそれもある。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「これらは担当者の頭の中にある暗黙知であり、そのままではAIも新人も参照できない。退職や異動があると失われるおそれもある。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "これらは担当者の頭の中にある暗黙知であり、そのままではAIも新人も参照できない。退職や異動があると失われるおそれもある。",
+    "id": "u17-016"
+  },
+  {
+    "tag": "AI活用資産へ変える流れ",
+    "level": "応用",
+    "question": "Unit17の「AI活用資産へ変える流れ」で押さえるべき内容は？",
+    "options": [
+      "1. 暗黙知の洗い出し",
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「1. 暗黙知の洗い出し」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "1. 暗黙知の洗い出し",
+    "id": "u17-017"
+  },
+  {
+    "tag": "AI活用資産へ変える流れ",
+    "level": "応用",
+    "question": "Unit17の「AI活用資産へ変える流れ」で押さえるべき内容は？（確認18）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "インタビュー、対応場面の観察、対応履歴の確認で、判断基準を取り出す。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「インタビュー、対応場面の観察、対応履歴の確認で、判断基準を取り出す。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "インタビュー、対応場面の観察、対応履歴の確認で、判断基準を取り出す。",
+    "id": "u17-018"
+  },
+  {
+    "tag": "AI活用資産へ変える流れ",
+    "level": "応用",
+    "question": "Unit17の「AI活用資産へ変える流れ」で押さえるべき内容は？（確認19）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "2. 表出化",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「2. 表出化」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "2. 表出化",
+    "id": "u17-019"
+  },
+  {
+    "tag": "AI活用資産へ変える流れ",
+    "level": "応用",
+    "question": "Unit17の「AI活用資産へ変える流れ」で押さえるべき内容は？（確認20）",
+    "options": [
+      "ベテランの暗黙知を、AIエージェントが参照できる形式知へ変える流れ。",
+      "ヘルプデスクAIを例に、暗黙知の洗い出し、FAQ化、フローチャート化、ナレッジベース統合、運用後改善を理解する。",
+      "「高性能なLLMを入れれば解決する」という誤解を避け、判断基準の文書化を優先する。",
+      "FAQ、原因切り分けフロー、部署別トラブル一覧、回答テンプレートへ変換する。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「FAQ、原因切り分けフロー、部署別トラブル一覧、回答テンプレートへ変換する。」。Unit17では、この観点を業務導入の判断材料として押さえる。",
+    "point": "FAQ、原因切り分けフロー、部署別トラブル一覧、回答テンプレートへ変換する。",
+    "id": "u17-020"
+  }
+];
+  const stateKey = 'sio-unit17_knowledge_to_ai_asset-four-choice-v1';
+  let order = QUESTIONS.map((_, i) => i); let current = 0; let selected = null; let progress = loadProgress();
+  const $ = id => document.getElementById(id);
+  const els = {total:$('statTotal'),correct:$('statCorrect'),wrong:$('statWrong'),rate:$('statRate'),bar:$('progressBar'),q:$('questionText'),choices:$('choices'),feedback:$('feedback'),cardIndex:$('cardIndex'),cardTag:$('cardTag'),cardLevel:$('cardLevel'),list:$('cardList'),tagFilter:$('tagFilter'),search:$('searchBox')};
+  function loadProgress(){try{return JSON.parse(localStorage.getItem(stateKey))||{}}catch{return {}}} function saveProgress(){localStorage.setItem(stateKey,JSON.stringify(progress))}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function tags(){return [...new Set(QUESTIONS.map(q=>q.tag))]}
+  function filteredOrder(){const term=els.search.value.trim().toLowerCase();const tag=els.tagFilter.value;return order.filter(i=>{const q=QUESTIONS[i];const hay=`${q.question} ${q.options.join(' ')} ${q.explanation} ${q.point} ${q.tag}`.toLowerCase();return (tag==='all'||q.tag===tag)&&(!term||hay.includes(term));})}
+  function safeList(){const list=filteredOrder(); if(!list.length)return []; if(current>=list.length)current=list.length-1; if(current<0)current=0; return list;}
+  function renderStats(){const vals=Object.values(progress); const correct=vals.filter(v=>v==='correct').length; const wrong=vals.filter(v=>v==='wrong').length; const answered=correct+wrong; const rate=answered?Math.round(correct/answered*100):0; els.total.textContent=QUESTIONS.length; els.correct.textContent=correct; els.wrong.textContent=wrong; els.rate.textContent=`${rate}%`; els.bar.style.width=`${Math.round(answered/QUESTIONS.length*100)}%`;}
+  function renderFocus(){const list=safeList(); selected=null; els.feedback.classList.remove('show'); if(!list.length){els.cardIndex.textContent='該当なし';els.cardTag.textContent='-';els.cardLevel.textContent='-';els.q.textContent='条件に合う問題がありません。';els.choices.innerHTML='';return;} const q=QUESTIONS[list[current]]; els.cardIndex.textContent=`Q ${current+1} / ${list.length}`; els.cardTag.textContent=q.tag; els.cardLevel.textContent=q.level; els.q.textContent=q.question; els.choices.innerHTML=q.options.map((opt,i)=>`<button class="choice" data-choice="${i}" type="button"><span class="label">${String.fromCharCode(65+i)}</span><span class="txt">${escapeHtml(opt)}</span></button>`).join(''); els.choices.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>choose(Number(btn.dataset.choice))));}
+  function choose(i){const list=safeList(); if(!list.length)return; const q=QUESTIONS[list[current]]; selected=i; const ok=i===q.correct; progress[q.id]=ok?'correct':'wrong'; saveProgress(); els.choices.querySelectorAll('.choice').forEach((btn,idx)=>{btn.disabled=true; if(idx===q.correct)btn.classList.add('correct'); else if(idx===i)btn.classList.add('wrong'); else btn.classList.add('dim');}); els.feedback.innerHTML=`<b class="${ok?'ok':'ng'}">${ok?'正解':'不正解'}</b><br>${escapeHtml(q.explanation)}<div class="point"><b>ポイント：</b>${escapeHtml(q.point)}</div>`; els.feedback.classList.add('show'); renderStats(); renderList();}
+  function renderList(){const list=filteredOrder(); els.list.innerHTML=list.map((i,pos)=>{const q=QUESTIONS[i];const st=progress[q.id]||'';const label=st==='correct'?'正解':st==='wrong'?'復習':'未回答';return `<button class="mini ${st==='correct'?'done':st==='wrong'?'wrong':''}" data-pos="${pos}" type="button"><strong>${pos+1}. ${escapeHtml(q.question)}</strong><small><span>${escapeHtml(q.tag)}</span><span>${escapeHtml(q.level)}</span><span>${label}</span></small></button>`;}).join(''); els.list.querySelectorAll('.mini').forEach(btn=>btn.addEventListener('click',()=>{current=Number(btn.dataset.pos);renderFocus();window.scrollTo({top:document.querySelector('.focus-card').offsetTop-10,behavior:'smooth'})}));}
+  function renderAll(){renderStats();renderFocus();renderList();}
+  function setup(){for(const tag of tags()){const opt=document.createElement('option');opt.value=tag;opt.textContent=tag;els.tagFilter.appendChild(opt)} $('nextBtn').addEventListener('click',()=>{const list=safeList(); if(current<list.length-1)current++; renderFocus();}); $('prevBtn').addEventListener('click',()=>{if(current>0)current--; renderFocus();}); $('shuffleBtn').addEventListener('click',()=>{order=order.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);current=0;renderAll();}); $('resetBtn').addEventListener('click',()=>{if(confirm('学習記録をリセットしますか？')){progress={};saveProgress();renderAll();}}); els.search.addEventListener('input',()=>{current=0;renderAll();}); els.tagFilter.addEventListener('change',()=>{current=0;renderAll();}); renderAll();}
+  window.addEventListener('DOMContentLoaded', setup);
+  </script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Unit07 四択問題集 | AIエージェント・ストラテジスト</title>
+  <style>
+    :root {
+      --bg:#f6f8fb; --panel:#fff; --text:#172033; --muted:#63708a; --line:#dfe6f1;
+      --blue:#2563eb; --blue2:#dbeafe; --green:#10b981; --green2:#dcfce7; --red:#ef4444; --red2:#fee2e2; --orange:#f59e0b;
+      --shadow:0 18px 50px rgba(16,24,40,.10); --radius:24px;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP",sans-serif;
+    }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)} body{overflow-x:hidden} button,input,select{font:inherit}
+    .app{width:min(1120px,100%);margin:0 auto;padding:20px clamp(14px,3vw,32px) 64px}
+    .hero{background:linear-gradient(135deg,#fff 0%,#eef5ff 56%,#f7fbff 100%);border:1px solid #e5edf8;border-radius:30px;padding:clamp(18px,4vw,34px);box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero:after{content:"";position:absolute;right:-70px;top:-80px;width:220px;height:220px;background:rgba(37,99,235,.10);border-radius:50%}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;padding:7px 12px;border-radius:999px;font-weight:800;font-size:13px}
+    h1{margin:16px 0 10px;font-size:clamp(26px,5.8vw,44px);line-height:1.12;letter-spacing:-.04em;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+    .lead{margin:0;color:var(--muted);font-size:clamp(15px,2vw,18px);line-height:1.75;max-width:780px;overflow-wrap:anywhere;word-break:break-word}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+    .stat{background:rgba(255,255,255,.78);border:1px solid #e5edf8;border-radius:18px;padding:12px;min-width:0}.stat b{display:block;font-size:22px;line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+    .progress-shell{height:10px;background:#e8eef8;border-radius:999px;overflow:hidden;margin-top:12px}.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#06b6d4);border-radius:999px;transition:width .2s}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}.control{flex:1 1 180px;min-width:0;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;color:var(--text)}
+    .btn{border:0;border-radius:16px;padding:13px 16px;background:#e8eef8;color:#1f2a44;font-weight:900;cursor:pointer;min-height:48px}.btn.primary{background:var(--blue);color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line)}.btn:active{transform:translateY(1px)}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:18px;align-items:start}
+    .focus-card,.list-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.focus-card{padding:clamp(18px,4vw,30px)}.list-panel{padding:18px}
+    .meta-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.pill{display:inline-flex;border-radius:999px;padding:7px 11px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:900}.pill.blue{background:var(--blue2);color:#1d4ed8}
+    .qtext{font-size:clamp(21px,5.2vw,32px);line-height:1.45;letter-spacing:-.02em;margin:10px 0 18px;font-weight:900;overflow-wrap:anywhere}
+    .choices{display:grid;gap:10px;margin-top:14px}.choice{width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 14px;min-height:58px;display:flex;gap:10px;align-items:flex-start;line-height:1.55;cursor:pointer}
+    .choice .label{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;background:#eef2ff;color:#1d4ed8;font-weight:900}.choice .txt{min-width:0;overflow-wrap:anywhere}
+    .choice.correct{border-color:#22c55e;background:var(--green2)}.choice.wrong{border-color:#f87171;background:var(--red2)}.choice.dim{opacity:.55}
+    .feedback{display:none;margin-top:16px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;line-height:1.75}.feedback.show{display:block}.feedback b.ok{color:#15803d}.feedback b.ng{color:#b91c1c}
+    .point{border-left:4px solid var(--green);padding-left:12px;color:#334155;margin-top:10px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .list-panel h2{margin:0 0 12px;font-size:20px}.cards{display:grid;gap:10px;max-height:620px;overflow:auto;padding-right:4px}
+    .mini{text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;cursor:pointer;min-width:0}.mini.done{border-color:#86efac;background:#f0fdf4}.mini.wrong{border-color:#fca5a5;background:#fff1f2}
+    .mini strong{display:block;font-size:14px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}.mini small{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;color:var(--muted)}
+    @media(max-width:760px){.app{padding:12px 12px 48px}.hero{border-radius:24px}.stats{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.control{flex-basis:100%}.btn{width:100%}.actions{grid-template-columns:1fr}.cards{max-height:none;overflow:visible}}
+    @media(max-width:430px){h1{font-size:clamp(24px,7.1vw,30px);line-height:1.18;letter-spacing:-.035em}.lead{font-size:14px}.hero{padding:18px 20px}}
+    @media(max-width:390px){.app{padding-left:10px;padding-right:10px}.hero,.focus-card,.list-panel{border-radius:20px}.stat b{font-size:20px}.choice{padding:13px 12px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="eyebrow">Unit07 · 四択問題集</div>
+      <h1>RPAとAIエージェントの<br>違い<br>使い分けと組み合わせ</h1>
+      <p class="lead">スマホで解きやすい四択形式。選択するとすぐ正誤と解説が出ます。Unit07の講義ノート・理解度チェック・試験直前カードから20問に再構成。</p>
+      <div class="stats" aria-label="学習状況">
+        <div class="stat"><b id="statTotal">20</b><span>全問題</span></div><div class="stat"><b id="statCorrect">0</b><span>正解</span></div><div class="stat"><b id="statWrong">0</b><span>復習</span></div><div class="stat"><b id="statRate">0%</b><span>正答率</span></div>
+      </div>
+      <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+    <section class="toolbar" aria-label="操作">
+      <input class="control" id="searchBox" type="search" placeholder="検索：例 リスク / データ / KPI" />
+      <select class="control" id="tagFilter" aria-label="タグ絞り込み"><option value="all">すべてのタグ</option></select>
+      <button class="btn ghost" id="shuffleBtn" type="button">シャッフル</button>
+      <button class="btn ghost" id="resetBtn" type="button">記録リセット</button>
+    </section>
+    <section class="main-grid">
+      <article class="focus-card" aria-live="polite">
+        <div class="meta-row"><span class="pill blue" id="cardIndex">Q 1 / 20</span><span class="pill" id="cardTag">基本</span><span class="pill" id="cardLevel">基本</span></div>
+        <div class="qtext" id="questionText"></div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="actions"><button class="btn ghost" id="prevBtn" type="button">前へ</button><button class="btn primary" id="nextBtn" type="button">次へ</button></div>
+      </article>
+      <aside class="list-panel"><h2>全問リスト</h2><div class="cards" id="cardList"></div></aside>
+    </section>
+  </main>
+  <script>
+  const QUESTIONS = [
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "RPAが向いている業務の特徴は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "この処理はルールベースの自動化で十分ではないか。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+    "id": "u07-001"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "AIエージェントが向いている業務の特徴は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "この処理はルールベースの自動化で十分ではないか。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+    "id": "u07-002"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "両者の違いを一言でいうと？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "この処理はルールベースの自動化で十分ではないか。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+    "id": "u07-003"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "業務をAI化する前に最初に問うべきことは？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "この処理はルールベースの自動化で十分ではないか。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「この処理はルールベースの自動化で十分ではないか。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "この処理はルールベースの自動化で十分ではないか。",
+    "id": "u07-004"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "CSVや固定帳票はどちら向き？",
+    "options": [
+      "RPAやルールベース自動化向き。",
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「RPAやルールベース自動化向き。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "RPAやルールベース自動化向き。",
+    "id": "u07-005"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "自由記述メールの分類や緊急度判定はどちら向き？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "AIエージェント向き。自然言語の文脈理解が必要だから。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「AIエージェント向き。自然言語の文脈理解が必要だから。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "AIエージェント向き。自然言語の文脈理解が必要だから。",
+    "id": "u07-006"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "例外が頻繁に発生する業務でRPAだけに頼るとどうなる？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "処理停止と人間の介入が増え、かえって工数が増える可能性がある。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「処理停止と人間の介入が増え、かえって工数が増える可能性がある。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "処理停止と人間の介入が増え、かえって工数が増える可能性がある。",
+    "id": "u07-007"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "ハイパーオートメーションとは？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "定型処理とAI処理など複数技術を組み合わせ、業務プロセス全体を最適化する考え方。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「定型処理とAI処理など複数技術を組み合わせ、業務プロセス全体を最適化する考え方。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "定型処理とAI処理など複数技術を組み合わせ、業務プロセス全体を最適化する考え方。",
+    "id": "u07-008"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "ハイパーオートメーションはRPAをAIエージェントに完全置換することか？",
+    "options": [
+      "違う。各ステップに適した技術を割り当てる組み合わせである。",
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「違う。各ステップに適した技術を割り当てる組み合わせである。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "違う。各ステップに適した技術を割り当てる組み合わせである。",
+    "id": "u07-009"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "受注処理で、添付取得・発注書読取・システム登録はどう分担する？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "添付取得=定型処理、発注書読取=AI処理、システム登録=定型処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「添付取得=定型処理、発注書読取=AI処理、システム登録=定型処理。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "添付取得=定型処理、発注書読取=AI処理、システム登録=定型処理。",
+    "id": "u07-010"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "定型フォーマットの請求書処理はどちら向き？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPA向き。読み取り位置や手順が固定できるため。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「RPA向き。読み取り位置や手順が固定できるため。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "RPA向き。読み取り位置や手順が固定できるため。",
+    "id": "u07-011"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "取引先ごとに形式が違う帳票の読み取りはどちら向き？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "AIエージェント向き。文脈から項目の意味を推測する必要があるため。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「AIエージェント向き。文脈から項目の意味を推測する必要があるため。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "AIエージェント向き。文脈から項目の意味を推測する必要があるため。",
+    "id": "u07-012"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "シナリオ問題で迷ったときの判定軸は？",
+    "options": [
+      "入力の揺れ、例外の多さ、文脈理解の必要性。",
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「入力の揺れ、例外の多さ、文脈理解の必要性。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "入力の揺れ、例外の多さ、文脈理解の必要性。",
+    "id": "u07-013"
+  },
+  {
+    "tag": "試験カード",
+    "level": "基本",
+    "question": "AIエージェント導入で既存業務をそのままなぞるだけでは不十分な理由は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "待ち時間、差し戻し、紙の回付など、プロセス上の非効率が残るため。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「待ち時間、差し戻し、紙の回付など、プロセス上の非効率が残るため。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "待ち時間、差し戻し、紙の回付など、プロセス上の非効率が残るため。",
+    "id": "u07-014"
+  },
+  {
+    "tag": "対象",
+    "level": "標準",
+    "question": "Unit07の「対象」で押さえるべき内容は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "Chapter: Chapter 01",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「Chapter: Chapter 01」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "Chapter: Chapter 01",
+    "id": "u07-015"
+  },
+  {
+    "tag": "対象",
+    "level": "標準",
+    "question": "Unit07の「対象」で押さえるべき内容は？（確認16）",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "対象範囲: p.42〜p.51相当"
+    ],
+    "correct": 3,
+    "explanation": "正解は「対象範囲: p.42〜p.51相当」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "対象範囲: p.42〜p.51相当",
+    "id": "u07-016"
+  },
+  {
+    "tag": "対象",
+    "level": "応用",
+    "question": "Unit07の「対象」で押さえるべき内容は？（確認17）",
+    "options": [
+      "目的: RPAとAIエージェントを競合ではなく、業務の性質に応じて使い分け、必要に応じて組み合わせる判断軸を身につける。",
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「目的: RPAとAIエージェントを競合ではなく、業務の性質に応じて使い分け、必要に応じて組み合わせる判断軸を身につける。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "目的: RPAとAIエージェントを競合ではなく、業務の性質に応じて使い分け、必要に応じて組み合わせる判断軸を身につける。",
+    "id": "u07-017"
+  },
+  {
+    "tag": "このUnitの結論",
+    "level": "応用",
+    "question": "Unit07の「このUnitの結論」で押さえるべき内容は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "RPAとAIエージェントは、どちらが上位かで比べるものではない。RPAは決まった手順を正確に繰り返す技術であり、AIエージェントは文脈を読み取り、判断し、次の行動を選ぶ仕組みである。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「RPAとAIエージェントは、どちらが上位かで比べるものではない。RPAは決まった手順を正確に繰り返す技術であり、AIエージェントは文脈を読み取り、判断し、次の行動を選ぶ仕組みである。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "RPAとAIエージェントは、どちらが上位かで比べるものではない。RPAは決まった手順を正確に繰り返す技術であり、AIエージェントは文脈を読み取り…",
+    "id": "u07-018"
+  },
+  {
+    "tag": "このUnitの結論",
+    "level": "応用",
+    "question": "Unit07の「このUnitの結論」で押さえるべき内容は？（確認19）",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "試験では、業務シナリオを読んで「固定手順で十分か」「文脈理解や例外判断が必要か」を見抜くことが重要になる。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「試験では、業務シナリオを読んで「固定手順で十分か」「文脈理解や例外判断が必要か」を見抜くことが重要になる。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "試験では、業務シナリオを読んで「固定手順で十分か」「文脈理解や例外判断が必要か」を見抜くことが重要になる。",
+    "id": "u07-019"
+  },
+  {
+    "tag": "1. 使い分けが必要な理由",
+    "level": "応用",
+    "question": "Unit07の「1. 使い分けが必要な理由」で押さえるべき内容は？",
+    "options": [
+      "手順・条件・入力形式が決まっており、例外が少ない繰り返し処理。",
+      "文脈理解、判断、非構造データの読み取り、例外対応が必要な業務。",
+      "RPAは決められた手順を実行する。AIエージェントは文脈を読み、判断して行動を選ぶ。",
+      "AIエージェント導入を考えると、すべてをAI化したくなりやすい。しかし、手順が明確で判断が不要な業務にまでAIエージェントを使うと、コストが増えたり、確率的な誤りを持ち込んだりする。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「AIエージェント導入を考えると、すべてをAI化したくなりやすい。しかし、手順が明確で判断が不要な業務にまでAIエージェントを使うと、コストが増えたり、確率的な誤りを持ち込んだりする。」。Unit07では、この観点を業務導入の判断材料として押さえる。",
+    "point": "AIエージェント導入を考えると、すべてをAI化したくなりやすい。しかし、手順が明確で判断が不要な業務にまでAIエージェントを使うと、コストが増え…",
+    "id": "u07-020"
+  }
+];
+  const stateKey = 'sio-unit07_rpa_vs_agent-four-choice-v1';
+  let order = QUESTIONS.map((_, i) => i); let current = 0; let selected = null; let progress = loadProgress();
+  const $ = id => document.getElementById(id);
+  const els = {total:$('statTotal'),correct:$('statCorrect'),wrong:$('statWrong'),rate:$('statRate'),bar:$('progressBar'),q:$('questionText'),choices:$('choices'),feedback:$('feedback'),cardIndex:$('cardIndex'),cardTag:$('cardTag'),cardLevel:$('cardLevel'),list:$('cardList'),tagFilter:$('tagFilter'),search:$('searchBox')};
+  function loadProgress(){try{return JSON.parse(localStorage.getItem(stateKey))||{}}catch{return {}}} function saveProgress(){localStorage.setItem(stateKey,JSON.stringify(progress))}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function tags(){return [...new Set(QUESTIONS.map(q=>q.tag))]}
+  function filteredOrder(){const term=els.search.value.trim().toLowerCase();const tag=els.tagFilter.value;return order.filter(i=>{const q=QUESTIONS[i];const hay=`${q.question} ${q.options.join(' ')} ${q.explanation} ${q.point} ${q.tag}`.toLowerCase();return (tag==='all'||q.tag===tag)&&(!term||hay.includes(term));})}
+  function safeList(){const list=filteredOrder(); if(!list.length)return []; if(current>=list.length)current=list.length-1; if(current<0)current=0; return list;}
+  function renderStats(){const vals=Object.values(progress); const correct=vals.filter(v=>v==='correct').length; const wrong=vals.filter(v=>v==='wrong').length; const answered=correct+wrong; const rate=answered?Math.round(correct/answered*100):0; els.total.textContent=QUESTIONS.length; els.correct.textContent=correct; els.wrong.textContent=wrong; els.rate.textContent=`${rate}%`; els.bar.style.width=`${Math.round(answered/QUESTIONS.length*100)}%`;}
+  function renderFocus(){const list=safeList(); selected=null; els.feedback.classList.remove('show'); if(!list.length){els.cardIndex.textContent='該当なし';els.cardTag.textContent='-';els.cardLevel.textContent='-';els.q.textContent='条件に合う問題がありません。';els.choices.innerHTML='';return;} const q=QUESTIONS[list[current]]; els.cardIndex.textContent=`Q ${current+1} / ${list.length}`; els.cardTag.textContent=q.tag; els.cardLevel.textContent=q.level; els.q.textContent=q.question; els.choices.innerHTML=q.options.map((opt,i)=>`<button class="choice" data-choice="${i}" type="button"><span class="label">${String.fromCharCode(65+i)}</span><span class="txt">${escapeHtml(opt)}</span></button>`).join(''); els.choices.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>choose(Number(btn.dataset.choice))));}
+  function choose(i){const list=safeList(); if(!list.length)return; const q=QUESTIONS[list[current]]; selected=i; const ok=i===q.correct; progress[q.id]=ok?'correct':'wrong'; saveProgress(); els.choices.querySelectorAll('.choice').forEach((btn,idx)=>{btn.disabled=true; if(idx===q.correct)btn.classList.add('correct'); else if(idx===i)btn.classList.add('wrong'); else btn.classList.add('dim');}); els.feedback.innerHTML=`<b class="${ok?'ok':'ng'}">${ok?'正解':'不正解'}</b><br>${escapeHtml(q.explanation)}<div class="point"><b>ポイント：</b>${escapeHtml(q.point)}</div>`; els.feedback.classList.add('show'); renderStats(); renderList();}
+  function renderList(){const list=filteredOrder(); els.list.innerHTML=list.map((i,pos)=>{const q=QUESTIONS[i];const st=progress[q.id]||'';const label=st==='correct'?'正解':st==='wrong'?'復習':'未回答';return `<button class="mini ${st==='correct'?'done':st==='wrong'?'wrong':''}" data-pos="${pos}" type="button"><strong>${pos+1}. ${escapeHtml(q.question)}</strong><small><span>${escapeHtml(q.tag)}</span><span>${escapeHtml(q.level)}</span><span>${label}</span></small></button>`;}).join(''); els.list.querySelectorAll('.mini').forEach(btn=>btn.addEventListener('click',()=>{current=Number(btn.dataset.pos);renderFocus();window.scrollTo({top:document.querySelector('.focus-card').offsetTop-10,behavior:'smooth'})}));}
+  function renderAll(){renderStats();renderFocus();renderList();}
+  function setup(){for(const tag of tags()){const opt=document.createElement('option');opt.value=tag;opt.textContent=tag;els.tagFilter.appendChild(opt)} $('nextBtn').addEventListener('click',()=>{const list=safeList(); if(current<list.length-1)current++; renderFocus();}); $('prevBtn').addEventListener('click',()=>{if(current>0)current--; renderFocus();}); $('shuffleBtn').addEventListener('click',()=>{order=order.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);current=0;renderAll();}); $('resetBtn').addEventListener('click',()=>{if(confirm('学習記録をリセットしますか？')){progress={};saveProgress();renderAll();}}); els.search.addEventListener('input',()=>{current=0;renderAll();}); els.tagFilter.addEventListener('change',()=>{current=0;renderAll();}); renderAll();}
+  window.addEventListener('DOMContentLoaded', setup);
+  </script>
+</body>
+</html>

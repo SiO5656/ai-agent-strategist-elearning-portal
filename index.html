@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIエージェント・ストラテジスト eラーニング</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #677089;
+      --line: #e5e8f0;
+      --brand: #3858ff;
+      --brand2: #00a6a6;
+      --soft: #eef2ff;
+      --ok: #168456;
+      --warn: #b96b00;
+      --shadow: 0 18px 40px rgba(24, 34, 61, 0.10);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(56,88,255,.16), transparent 34rem),
+        radial-gradient(circle at top right, rgba(0,166,166,.15), transparent 30rem),
+        var(--bg);
+      line-height: 1.7;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 28px 0 18px; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(16px); background: rgba(247,248,251,.82); border-bottom: 1px solid rgba(229,232,240,.8); }
+    .nav { display: flex; gap: 14px; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .02em; }
+    .mark { width: 42px; height: 42px; border-radius: 14px; display:grid; place-items:center; color:white; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: var(--shadow); }
+    .navlinks { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .pill { border: 1px solid var(--line); background: rgba(255,255,255,.78); padding: 9px 13px; border-radius: 999px; text-decoration:none; font-size: 13px; color: var(--muted); }
+    .hero { padding: 54px 0 34px; }
+    .heroGrid { display:grid; grid-template-columns: 1.3fr .7fr; gap: 24px; align-items: stretch; }
+    .heroCard, .panel { background: rgba(255,255,255,.88); border: 1px solid rgba(229,232,240,.9); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .heroCard { padding: 34px; overflow:hidden; position:relative; }
+    .heroCard:after { content:""; position:absolute; right:-80px; top:-90px; width:260px; height:260px; border-radius: 80px; transform: rotate(24deg); background: linear-gradient(135deg, rgba(56,88,255,.14), rgba(0,166,166,.16)); }
+    .eyebrow { color: var(--brand); font-weight: 800; font-size: 14px; margin-bottom: 8px; }
+    h1 { margin:0; font-size: clamp(30px, 5vw, 58px); line-height:1.12; letter-spacing: -.04em; }
+    .lead { margin: 18px 0 0; color: var(--muted); font-size: clamp(15px, 2.2vw, 18px); max-width: 720px; }
+    .ctaRow { display:flex; gap: 12px; flex-wrap:wrap; margin-top:24px; }
+    .btn { appearance:none; border: 0; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding: 12px 16px; min-height: 46px; border-radius: 14px; text-decoration:none; font-weight: 800; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
+    .btn:hover { transform: translateY(-1px); }
+    .btnPrimary { background: linear-gradient(135deg, var(--brand), #243bd1); color:white; box-shadow: 0 14px 28px rgba(56,88,255,.22); }
+    .btnGhost { background: #fff; color: var(--ink); border:1px solid var(--line); }
+    .btnSoft { background: var(--soft); color: #243bd1; }
+    .stats { padding: 24px; display:grid; gap: 12px; }
+    .stat { background: #fff; border:1px solid var(--line); border-radius: 18px; padding: 16px; }
+    .stat b { display:block; font-size: 30px; line-height:1.05; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .progressOuter { height: 12px; background:#edf0f7; border-radius:999px; overflow:hidden; margin-top: 12px; }
+    .progressInner { height: 100%; width:0%; background: linear-gradient(90deg, var(--brand), var(--brand2)); transition: width .25s ease; }
+    section { padding: 24px 0; }
+    .sectionTitle { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:14px; }
+    h2 { margin:0; font-size: clamp(24px, 3vw, 34px); letter-spacing:-.03em; }
+    .muted { color: var(--muted); }
+    .toolbar { padding: 18px; display:grid; grid-template-columns: 1fr auto auto; gap:12px; align-items:center; }
+    input, select { width:100%; min-height: 46px; border-radius: 14px; border:1px solid var(--line); background:#fff; padding: 0 14px; font: inherit; color: var(--ink); }
+    .sections { display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap:10px; }
+    .sectionChip { border:1px solid var(--line); background:#fff; border-radius:18px; padding:12px; min-width:0; }
+    .sectionChip strong { display:block; font-size:13px; }
+    .sectionChip span { color:var(--muted); font-size:12px; }
+    .grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px; }
+    .unitCard { background:#fff; border:1px solid var(--line); border-radius: 22px; padding:18px; box-shadow: 0 8px 22px rgba(24,34,61,.06); display:flex; flex-direction:column; min-width:0; }
+    .unitTop { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .unitNo { flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; min-width:76px; height:34px; border-radius:999px; background:var(--soft); color:#243bd1; font-weight:900; font-size:13px; }
+    .sectionBadge { flex:0 1 auto; min-width:0; color: var(--muted); border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .unitCard h3 { margin:14px 0 8px; font-size:18px; line-height:1.45; letter-spacing:-.02em; }
+    .chapter { color:var(--muted); font-size:13px; margin-bottom:14px; min-height: 44px; }
+    .actions { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:auto; }
+    .checks { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); }
+    .check { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; user-select:none; }
+    .check input { width:18px; min-height:18px; accent-color: var(--brand); }
+    .done { outline: 2px solid rgba(22,132,86,.16); }
+    .done .unitNo { background: rgba(22,132,86,.12); color: var(--ok); }
+    .empty { text-align:center; color:var(--muted); padding:40px; }
+    .modal { position: fixed; inset:0; display:none; align-items:center; justify-content:center; padding:18px; background: rgba(18,26,42,.62); z-index:50; }
+    .modal.open { display:flex; }
+    .modalBox { width:min(980px,100%); background:#fff; border-radius:24px; overflow:hidden; box-shadow: var(--shadow); }
+    .modalHead { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 16px; border-bottom:1px solid var(--line); }
+    .modalHead strong { line-height:1.35; }
+    .modalFrame { aspect-ratio: 16/10; width:100%; border:0; display:block; background:#111; }
+    .note { padding:14px 16px; color:var(--muted); font-size:13px; background:#fbfcff; }
+    footer { padding: 36px 0 50px; color:var(--muted); font-size:13px; }
+    @media (max-width: 980px) {
+      .heroGrid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .sections { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .toolbar { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 22px, 1180px); }
+      header { position: static; padding-top: 16px; }
+      .nav { align-items:flex-start; }
+      .navlinks { display:none; }
+      .hero { padding-top: 24px; }
+      .heroCard { padding: 22px; border-radius: 22px; }
+      .stats { padding: 14px; grid-template-columns: 1fr 1fr; }
+      .stat b { font-size: 24px; }
+      .grid { grid-template-columns: 1fr; }
+      .sections { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+      .sectionTitle { align-items:flex-start; flex-direction:column; }
+      .modal { padding: 10px; }
+      .modalFrame { aspect-ratio: 9/13; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><div class="mark">AI</div><div>AIエージェント・ストラテジスト<br><span class="muted">eラーニングポータル</span></div></div>
+      <nav class="navlinks" aria-label="ページ内リンク">
+        <a class="pill" href="#units">Unit一覧</a>
+        <a class="pill" href="#sections">カテゴリ</a>
+        <a class="pill" href="#howto">開き方</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div class="heroGrid">
+        <div class="heroCard">
+          <div class="eyebrow">動画 × 四択問題集を1ページに統合</div>
+          <h1>全45Unitを<br>見て、解いて、<br>進捗管理。</h1>
+          <p class="lead">Drive上の講義動画と、同梱された四択HTML問題集へすぐ移動できる学習入口です。検索・カテゴリ絞り込み・視聴済み/問題済みチェックはこのブラウザに保存されます。</p>
+          <div class="ctaRow">
+            <a class="btn btnPrimary" href="#units">学習を始める</a>
+            <button class="btn btnGhost" id="resetProgress">進捗をリセット</button>
+          </div>
+        </div>
+        <aside class="panel stats" aria-label="学習状況">
+          <div class="stat"><b>45</b><span>動画Unit</span></div>
+          <div class="stat"><b>900</b><span>四択問題</span></div>
+          <div class="stat"><b id="videoDone">0</b><span>視聴済み</span></div>
+          <div class="stat"><b id="quizDone">0</b><span>問題済み</span></div>
+          <div class="stat" style="grid-column:1/-1;"><span>総合進捗</span><div class="progressOuter"><div class="progressInner" id="progressBar"></div></div><p class="muted" id="progressText">0 / 90 完了</p></div>
+        </aside>
+      </div>
+    </div>
+
+    <section id="sections">
+      <div class="wrap">
+        <div class="sectionTitle"><h2>学習カテゴリ</h2><p class="muted">講座全体を7ブロックで把握</p></div>
+        <div class="sections" id="sectionList"></div>
+      </div>
+    </section>
+
+    <section id="units">
+      <div class="wrap">
+        <div class="sectionTitle"><h2>Unit一覧</h2><p class="muted" id="resultCount">45件</p></div>
+        <div class="panel toolbar">
+          <input id="search" type="search" placeholder="Unit名・章名・キーワードで検索">
+          <select id="sectionFilter" aria-label="カテゴリ絞り込み"><option value="all">すべてのカテゴリ</option></select>
+          <select id="statusFilter" aria-label="進捗絞り込み"><option value="all">すべての進捗</option><option value="notStarted">未着手</option><option value="videoOnly">動画のみ完了</option><option value="quizOnly">問題のみ完了</option><option value="done">両方完了</option></select>
+        </div>
+        <div class="grid" id="unitGrid"></div>
+      </div>
+    </section>
+
+    <section id="howto">
+      <div class="wrap panel" style="padding:22px;">
+        <h2>開き方</h2>
+        <p>ZIPを展開して、この `elearning_page/index.html` をブラウザで開いてください。問題集は同梱の `question_bank/` を相対リンクで開きます。動画はGoogle Driveにログイン済みのブラウザで開くと視聴できます。</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="videoModal" aria-hidden="true">
+    <div class="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHead"><strong id="modalTitle">動画プレビュー</strong><button class="btn btnGhost" id="closeModal">閉じる</button></div>
+      <iframe class="modalFrame" id="videoFrame" allow="autoplay; fullscreen" allowfullscreen title="Drive video preview"></iframe>
+      <div class="note">プレビューが表示されない場合は、カードの「Driveで開く」から別タブで視聴してください。</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">Generated: 2026-06-13 11:07 JST / Deployed static portal: GitHub Pages + question_bank</div>
+  </footer>
+
+  <script>
+    const UNITS = [
+  {
+    "unit": 1,
+    "unitLabel": "Unit 01",
+    "title": "講座オリエンテーション：AIを使う人から導入する人へ",
+    "chapter": "Prologue / Chapter 01導入",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit01_course_orientation",
+    "videoUrl": "https://drive.google.com/file/d/1QECygfkb3YOHjn4N4dFHITY9LXGqwB27/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1QECygfkb3YOHjn4N4dFHITY9LXGqwB27/preview",
+    "quizUrl": "./question_bank/unit01_course_orientation/index.html",
+    "lessonUrl": "./units/unit01_course_orientation/lesson.md",
+    "qaUrl": "./units/unit01_course_orientation/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 2,
+    "unitLabel": "Unit 02",
+    "title": "生成AIの基本構造：従来AI・機械学習・LLMの違い",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit02_genai_mechanism",
+    "videoUrl": "https://drive.google.com/file/d/1b5g-LyEEW34R4J63hDU0LGE5TVkWdhf6/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1b5g-LyEEW34R4J63hDU0LGE5TVkWdhf6/preview",
+    "quizUrl": "./question_bank/unit02_genai_mechanism/index.html",
+    "lessonUrl": "./units/unit02_genai_mechanism/lesson.md",
+    "qaUrl": "./units/unit02_genai_mechanism/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 3,
+    "unitLabel": "Unit 03",
+    "title": "LLM運用の基礎：トークン・文脈・モデル選定",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit03_llm_operation_basics",
+    "videoUrl": "https://drive.google.com/file/d/16KwbndOwo1olPit-HVSZHAOe6CBXvqHf/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/16KwbndOwo1olPit-HVSZHAOe6CBXvqHf/preview",
+    "quizUrl": "./question_bank/unit03_llm_operation_basics/index.html",
+    "lessonUrl": "./units/unit03_llm_operation_basics/lesson.md",
+    "qaUrl": "./units/unit03_llm_operation_basics/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 4,
+    "unitLabel": "Unit 04",
+    "title": "AIエージェントとは何か：チャットボットとの違い",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit04_agent_definition",
+    "videoUrl": "https://drive.google.com/file/d/1xCgwNzRMTLslvfUEYf_M9v7wmMtSHAzb/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1xCgwNzRMTLslvfUEYf_M9v7wmMtSHAzb/preview",
+    "quizUrl": "./question_bank/unit04_agent_definition/index.html",
+    "lessonUrl": "./units/unit04_agent_definition/lesson.md",
+    "qaUrl": "./units/unit04_agent_definition/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 5,
+    "unitLabel": "Unit 05",
+    "title": "三位一体モデルと自律性レベル",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit05_agent_components_autonomy",
+    "videoUrl": "https://drive.google.com/file/d/1r07_zdkddOwCtY06_s2To40ij2P0QmjC/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1r07_zdkddOwCtY06_s2To40ij2P0QmjC/preview",
+    "quizUrl": "./question_bank/unit05_agent_components_autonomy/index.html",
+    "lessonUrl": "./units/unit05_agent_components_autonomy/lesson.md",
+    "qaUrl": "./units/unit05_agent_components_autonomy/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 6,
+    "unitLabel": "Unit 06",
+    "title": "AIエージェントの起動タイプを判別する",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit06_agent_trigger_types",
+    "videoUrl": "https://drive.google.com/file/d/1TfIGuDfdLU6Qdj6EEiW91tRKAmj6d6kW/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1TfIGuDfdLU6Qdj6EEiW91tRKAmj6d6kW/preview",
+    "quizUrl": "./question_bank/unit06_agent_trigger_types/index.html",
+    "lessonUrl": "./units/unit06_agent_trigger_types/lesson.md",
+    "qaUrl": "./units/unit06_agent_trigger_types/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 7,
+    "unitLabel": "Unit 07",
+    "title": "RPAとAIエージェントの違い：使い分けと組み合わせ",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit07_rpa_vs_agent",
+    "videoUrl": "https://drive.google.com/file/d/1AAbhhsjpNxuzQzDiQcw8fO1IENVueq6u/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1AAbhhsjpNxuzQzDiQcw8fO1IENVueq6u/preview",
+    "quizUrl": "./question_bank/unit07_rpa_vs_agent/index.html",
+    "lessonUrl": "./units/unit07_rpa_vs_agent/lesson.md",
+    "qaUrl": "./units/unit07_rpa_vs_agent/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 8,
+    "unitLabel": "Unit 08",
+    "title": "MCP：エージェント接続標準を概念で理解する",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit08_mcp_connection_standard",
+    "videoUrl": "https://drive.google.com/file/d/1wtfcmUjYlIslUP_l-yv1WrRr2UCPiWHr/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1wtfcmUjYlIslUP_l-yv1WrRr2UCPiWHr/preview",
+    "quizUrl": "./question_bank/unit08_mcp_connection_standard/index.html",
+    "lessonUrl": "./units/unit08_mcp_connection_standard/lesson.md",
+    "qaUrl": "./units/unit08_mcp_connection_standard/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 9,
+    "unitLabel": "Unit 09",
+    "title": "AIエージェント導入価値：ROI・TCO・定性価値",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit09_agent_business_value",
+    "videoUrl": "https://drive.google.com/file/d/1uayj0f0g6EqqkDa3SbAZ5WWaU8MvukWl/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1uayj0f0g6EqqkDa3SbAZ5WWaU8MvukWl/preview",
+    "quizUrl": "./question_bank/unit09_agent_business_value/index.html",
+    "lessonUrl": "./units/unit09_agent_business_value/lesson.md",
+    "qaUrl": "./units/unit09_agent_business_value/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 10,
+    "unitLabel": "Unit 10",
+    "title": "AIエージェントのリスクと対策：4カテゴリで整理する",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit10_agent_risk_controls",
+    "videoUrl": "https://drive.google.com/file/d/1yhEhBEFEaBYKLSA0wd09IthdDgBlStwk/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1yhEhBEFEaBYKLSA0wd09IthdDgBlStwk/preview",
+    "quizUrl": "./question_bank/unit10_agent_risk_controls/index.html",
+    "lessonUrl": "./units/unit10_agent_risk_controls/lesson.md",
+    "qaUrl": "./units/unit10_agent_risk_controls/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 11,
+    "unitLabel": "Unit 11",
+    "title": "生成AIの発展トレンドを導入判断に結びつける",
+    "chapter": "Chapter 01",
+    "section": "基礎理解",
+    "sectionDescription": "AI・LLM・エージェントの土台をつかむ",
+    "unitDir": "unit11_genai_trends",
+    "videoUrl": "https://drive.google.com/file/d/1TUCoH1g4U5cs9hgS4hLEm5elmQ-3pmJX/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1TUCoH1g4U5cs9hgS4hLEm5elmQ-3pmJX/preview",
+    "quizUrl": "./question_bank/unit11_genai_trends/index.html",
+    "lessonUrl": "./units/unit11_genai_trends/lesson.md",
+    "qaUrl": "./units/unit11_genai_trends/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 12,
+    "unitLabel": "Unit 12",
+    "title": "業務の構造的理解：As-IsからTo-Beへ",
+    "chapter": "Chapter 02",
+    "section": "業務設計",
+    "sectionDescription": "As-Is/To-Be、BPR、可視化で導入前の整理をする",
+    "unitDir": "unit12_business_as_is_to_be",
+    "videoUrl": "https://drive.google.com/file/d/1Dt_zAG7cFQvnjZxqub2YK1-pvRqe_rqe/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1Dt_zAG7cFQvnjZxqub2YK1-pvRqe_rqe/preview",
+    "quizUrl": "./question_bank/unit12_business_as_is_to_be/index.html",
+    "lessonUrl": "./units/unit12_business_as_is_to_be/lesson.md",
+    "qaUrl": "./units/unit12_business_as_is_to_be/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 13,
+    "unitLabel": "Unit 13",
+    "title": "業務ギャップ分析：改善候補を見極める",
+    "chapter": "Chapter 02",
+    "section": "業務設計",
+    "sectionDescription": "As-Is/To-Be、BPR、可視化で導入前の整理をする",
+    "unitDir": "unit13_business_gap_analysis",
+    "videoUrl": "https://drive.google.com/file/d/1X_Ckkp8tpITApZAQi_woBBaY2f191BZ8/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1X_Ckkp8tpITApZAQi_woBBaY2f191BZ8/preview",
+    "quizUrl": "./question_bank/unit13_business_gap_analysis/index.html",
+    "lessonUrl": "./units/unit13_business_gap_analysis/lesson.md",
+    "qaUrl": "./units/unit13_business_gap_analysis/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 14,
+    "unitLabel": "Unit 14",
+    "title": "BPRとECRS：自動化前に業務を見直す",
+    "chapter": "Chapter 02",
+    "section": "業務設計",
+    "sectionDescription": "As-Is/To-Be、BPR、可視化で導入前の整理をする",
+    "unitDir": "unit14_bpr_ecrs",
+    "videoUrl": "https://drive.google.com/file/d/1fVIDt9gPp2fEgJo6F5X7-cCVnf3hOBrW/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1fVIDt9gPp2fEgJo6F5X7-cCVnf3hOBrW/preview",
+    "quizUrl": "./question_bank/unit14_bpr_ecrs/index.html",
+    "lessonUrl": "./units/unit14_bpr_ecrs/lesson.md",
+    "qaUrl": "./units/unit14_bpr_ecrs/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 15,
+    "unitLabel": "Unit 15",
+    "title": "業務可視化の4手法：IPOから業務フロー図まで",
+    "chapter": "Chapter 02",
+    "section": "業務設計",
+    "sectionDescription": "As-Is/To-Be、BPR、可視化で導入前の整理をする",
+    "unitDir": "unit15_business_visualization",
+    "videoUrl": "https://drive.google.com/file/d/1_H2oybLQ3WpD4oPNaDF-hmE4_Wn9MJd1/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1_H2oybLQ3WpD4oPNaDF-hmE4_Wn9MJd1/preview",
+    "quizUrl": "./question_bank/unit15_business_visualization/index.html",
+    "lessonUrl": "./units/unit15_business_visualization/lesson.md",
+    "qaUrl": "./units/unit15_business_visualization/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 16,
+    "unitLabel": "Unit 16",
+    "title": "ナレッジマネジメント：暗黙知・形式知・SECIモデル",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit16_knowledge_seci",
+    "videoUrl": "https://drive.google.com/file/d/102G1TyQ_3WUF7lZGEUSluR29W23YIfUK/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/102G1TyQ_3WUF7lZGEUSluR29W23YIfUK/preview",
+    "quizUrl": "./question_bank/unit16_knowledge_seci/index.html",
+    "lessonUrl": "./units/unit16_knowledge_seci/lesson.md",
+    "qaUrl": "./units/unit16_knowledge_seci/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 17,
+    "unitLabel": "Unit 17",
+    "title": "知識をAI活用資産へ変える考え方",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit17_knowledge_to_ai_asset",
+    "videoUrl": "https://drive.google.com/file/d/1BFZE3KYvRCdlfbhWXQjPhzlAtMzefeDj/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1BFZE3KYvRCdlfbhWXQjPhzlAtMzefeDj/preview",
+    "quizUrl": "./question_bank/unit17_knowledge_to_ai_asset/index.html",
+    "lessonUrl": "./units/unit17_knowledge_to_ai_asset/lesson.md",
+    "qaUrl": "./units/unit17_knowledge_to_ai_asset/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 18,
+    "unitLabel": "Unit 18",
+    "title": "データの種類と特性：構造化・非構造化・メタデータ",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit18_data_types_metadata",
+    "videoUrl": "https://drive.google.com/file/d/1W-tHBdLlQIsaSS4PqPImbwwEpq4Ecpag/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1W-tHBdLlQIsaSS4PqPImbwwEpq4Ecpag/preview",
+    "quizUrl": "./question_bank/unit18_data_types_metadata/index.html",
+    "lessonUrl": "./units/unit18_data_types_metadata/lesson.md",
+    "qaUrl": "./units/unit18_data_types_metadata/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 19,
+    "unitLabel": "Unit 19",
+    "title": "RAGの仕組み：検索して渡す2フェーズを理解する",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit19_rag_mechanism",
+    "videoUrl": "https://drive.google.com/file/d/1Do1RREoWawTbj5LhWpoHBeo4mdLZKzsX/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1Do1RREoWawTbj5LhWpoHBeo4mdLZKzsX/preview",
+    "quizUrl": "./question_bank/unit19_rag_mechanism/index.html",
+    "lessonUrl": "./units/unit19_rag_mechanism/lesson.md",
+    "qaUrl": "./units/unit19_rag_mechanism/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 20,
+    "unitLabel": "Unit 20",
+    "title": "AIガバナンスと法務：ポリシー・著作権・個人情報",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit20_ai_governance_legal",
+    "videoUrl": "https://drive.google.com/file/d/1cGijU6PGTJ4A6l7YBUwyvhYTWkFfETvo/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1cGijU6PGTJ4A6l7YBUwyvhYTWkFfETvo/preview",
+    "quizUrl": "./question_bank/unit20_ai_governance_legal/index.html",
+    "lessonUrl": "./units/unit20_ai_governance_legal/lesson.md",
+    "qaUrl": "./units/unit20_ai_governance_legal/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 21,
+    "unitLabel": "Unit 21",
+    "title": "AIが読みやすいデータ設計：区切り・表記・検索性",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit21_ai_readable_data_design",
+    "videoUrl": "https://drive.google.com/file/d/1GvGk2_9drNhEsbPYSYtH5OkPJnt9tunL/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1GvGk2_9drNhEsbPYSYtH5OkPJnt9tunL/preview",
+    "quizUrl": "./question_bank/unit21_ai_readable_data_design/index.html",
+    "lessonUrl": "./units/unit21_ai_readable_data_design/lesson.md",
+    "qaUrl": "./units/unit21_ai_readable_data_design/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 22,
+    "unitLabel": "Unit 22",
+    "title": "社内データをAI活用資産に変える実践",
+    "chapter": "Chapter 03",
+    "section": "知識・データ",
+    "sectionDescription": "ナレッジとデータをAI活用資産に変える",
+    "unitDir": "unit22_data_asset_practice",
+    "videoUrl": "https://drive.google.com/file/d/1JGzoq68CizqWhb5E8kJj1798UEyG9BI4/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1JGzoq68CizqWhb5E8kJj1798UEyG9BI4/preview",
+    "quizUrl": "./question_bank/unit22_data_asset_practice/index.html",
+    "lessonUrl": "./units/unit22_data_asset_practice/lesson.md",
+    "qaUrl": "./units/unit22_data_asset_practice/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 23,
+    "unitLabel": "Unit 23",
+    "title": "AIプロジェクトの進め方：PoC中心の導入初期設計",
+    "chapter": "Chapter 03",
+    "section": "プロジェクト",
+    "sectionDescription": "PoC、効果検証、成功定義を設計する",
+    "unitDir": "unit23_ai_project_poc",
+    "videoUrl": "https://drive.google.com/file/d/1rmTGXzeX03AXcDpvj3NRIcN9FPc_oZ9m/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1rmTGXzeX03AXcDpvj3NRIcN9FPc_oZ9m/preview",
+    "quizUrl": "./question_bank/unit23_ai_project_poc/index.html",
+    "lessonUrl": "./units/unit23_ai_project_poc/lesson.md",
+    "qaUrl": "./units/unit23_ai_project_poc/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 24,
+    "unitLabel": "Unit 24",
+    "title": "AIプロジェクトの効果検証と進行管理",
+    "chapter": "Chapter 03",
+    "section": "プロジェクト",
+    "sectionDescription": "PoC、効果検証、成功定義を設計する",
+    "unitDir": "unit24_ai_project_effect_design",
+    "videoUrl": "https://drive.google.com/file/d/1izFT1MInvvm-rK5z-5LPF0pTn38g27Lq/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1izFT1MInvvm-rK5z-5LPF0pTn38g27Lq/preview",
+    "quizUrl": "./question_bank/unit24_ai_project_effect_design/index.html",
+    "lessonUrl": "./units/unit24_ai_project_effect_design/lesson.md",
+    "qaUrl": "./units/unit24_ai_project_effect_design/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 25,
+    "unitLabel": "Unit 25",
+    "title": "成功定義の3層フレームワーク",
+    "chapter": "Chapter 03",
+    "section": "プロジェクト",
+    "sectionDescription": "PoC、効果検証、成功定義を設計する",
+    "unitDir": "unit25_success_three_layers",
+    "videoUrl": "https://drive.google.com/file/d/1ILCM6pXTtiy2WDc3oJE7UuSQPDog7SY3/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1ILCM6pXTtiy2WDc3oJE7UuSQPDog7SY3/preview",
+    "quizUrl": "./question_bank/unit25_success_three_layers/index.html",
+    "lessonUrl": "./units/unit25_success_three_layers/lesson.md",
+    "qaUrl": "./units/unit25_success_three_layers/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 26,
+    "unitLabel": "Unit 26",
+    "title": "自動化レベルの進化論：Lv.1〜Lv.4の使い分け",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit26_automation_levels",
+    "videoUrl": "https://drive.google.com/file/d/1aR3mF3SLo8N2BJ1_GfficRNM7wpw16gG/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1aR3mF3SLo8N2BJ1_GfficRNM7wpw16gG/preview",
+    "quizUrl": "./question_bank/unit26_automation_levels/index.html",
+    "lessonUrl": "./units/unit26_automation_levels/lesson.md",
+    "qaUrl": "./units/unit26_automation_levels/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 27,
+    "unitLabel": "Unit 27",
+    "title": "ワークフロー設計：トリガーとアクション",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit27_workflow_trigger_action",
+    "videoUrl": "https://drive.google.com/file/d/11qZWYVa4V4FLACKM8Bam5q-Z731id6yX/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/11qZWYVa4V4FLACKM8Bam5q-Z731id6yX/preview",
+    "quizUrl": "./question_bank/unit27_workflow_trigger_action/index.html",
+    "lessonUrl": "./units/unit27_workflow_trigger_action/lesson.md",
+    "qaUrl": "./units/unit27_workflow_trigger_action/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 28,
+    "unitLabel": "Unit 28",
+    "title": "実行・連携パターンと理解度チェック",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit28_workflow_execution_patterns",
+    "videoUrl": "https://drive.google.com/file/d/12Zc7CfkttHY2RY9bRvWUfBHReY3dfGEv/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/12Zc7CfkttHY2RY9bRvWUfBHReY3dfGEv/preview",
+    "quizUrl": "./question_bank/unit28_workflow_execution_patterns/index.html",
+    "lessonUrl": "./units/unit28_workflow_execution_patterns/lesson.md",
+    "qaUrl": "./units/unit28_workflow_execution_patterns/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 29,
+    "unitLabel": "Unit 29",
+    "title": "変数と条件分岐：If/Else・ルーティング・フィルタリング",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit29_workflow_variables_conditions",
+    "videoUrl": "https://drive.google.com/file/d/1U3GXypzMTWpxPnNoNVZUuG5EYMZk1yc4/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1U3GXypzMTWpxPnNoNVZUuG5EYMZk1yc4/preview",
+    "quizUrl": "./question_bank/unit29_workflow_variables_conditions/index.html",
+    "lessonUrl": "./units/unit29_workflow_variables_conditions/lesson.md",
+    "qaUrl": "./units/unit29_workflow_variables_conditions/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 30,
+    "unitLabel": "Unit 30",
+    "title": "コンテキストエンジニアリング概論：プロンプトとの違い",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit30_context_engineering_basics",
+    "videoUrl": "https://drive.google.com/file/d/1UbioM-5RKNMpUTv694rcYzZQUh7D1QM3/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1UbioM-5RKNMpUTv694rcYzZQUh7D1QM3/preview",
+    "quizUrl": "./question_bank/unit30_context_engineering_basics/index.html",
+    "lessonUrl": "./units/unit30_context_engineering_basics/lesson.md",
+    "qaUrl": "./units/unit30_context_engineering_basics/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 31,
+    "unitLabel": "Unit 31",
+    "title": "コンテキスト設計の実践：情報選択と品質改善",
+    "chapter": "Chapter 04",
+    "section": "自動化・文脈",
+    "sectionDescription": "ワークフローとコンテキスト設計を学ぶ",
+    "unitDir": "unit31_context_design_practice",
+    "videoUrl": "https://drive.google.com/file/d/1KqdMKVorWDkhC_ZMJFnrVaPin-CQW5Rt/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1KqdMKVorWDkhC_ZMJFnrVaPin-CQW5Rt/preview",
+    "quizUrl": "./question_bank/unit31_context_design_practice/index.html",
+    "lessonUrl": "./units/unit31_context_design_practice/lesson.md",
+    "qaUrl": "./units/unit31_context_design_practice/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 32,
+    "unitLabel": "Unit 32",
+    "title": "AIエージェント導入と組織文化の変革",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit32_organization_culture",
+    "videoUrl": "https://drive.google.com/file/d/1v6TiJxSxRamnSsex4y0o22VEqH9Vesht/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1v6TiJxSxRamnSsex4y0o22VEqH9Vesht/preview",
+    "quizUrl": "./question_bank/unit32_organization_culture/index.html",
+    "lessonUrl": "./units/unit32_organization_culture/lesson.md",
+    "qaUrl": "./units/unit32_organization_culture/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 33,
+    "unitLabel": "Unit 33",
+    "title": "AIエージェント推進の組織類型",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit33_organization_models",
+    "videoUrl": "https://drive.google.com/file/d/19cmgtMphBCY-d1PsOpUhEQl_2EL4DaCw/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/19cmgtMphBCY-d1PsOpUhEQl_2EL4DaCw/preview",
+    "quizUrl": "./question_bank/unit33_organization_models/index.html",
+    "lessonUrl": "./units/unit33_organization_models/lesson.md",
+    "qaUrl": "./units/unit33_organization_models/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 34,
+    "unitLabel": "Unit 34",
+    "title": "人材評価と指標の再設計：KPI・KGI・OKR",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit34_metrics_redesign",
+    "videoUrl": "https://drive.google.com/file/d/15RkCmTtWBJnflgVuTmS4KduPJfx1KdMN/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/15RkCmTtWBJnflgVuTmS4KduPJfx1KdMN/preview",
+    "quizUrl": "./question_bank/unit34_metrics_redesign/index.html",
+    "lessonUrl": "./units/unit34_metrics_redesign/lesson.md",
+    "qaUrl": "./units/unit34_metrics_redesign/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 35,
+    "unitLabel": "Unit 35",
+    "title": "職務設計・リスキリング・アップスキリング",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit35_role_reskilling",
+    "videoUrl": "https://drive.google.com/file/d/1hRRX67IfLJXEKkFvPuV6kKl2gcrO6F1Z/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1hRRX67IfLJXEKkFvPuV6kKl2gcrO6F1Z/preview",
+    "quizUrl": "./question_bank/unit35_role_reskilling/index.html",
+    "lessonUrl": "./units/unit35_role_reskilling/lesson.md",
+    "qaUrl": "./units/unit35_role_reskilling/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 36,
+    "unitLabel": "Unit 36",
+    "title": "チェンジマネジメント：抵抗曲線と心理的安全性",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit36_change_management",
+    "videoUrl": "https://drive.google.com/file/d/14_tDWKNqX5G5tjIsYXm-9IDz-SX-fnA9/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/14_tDWKNqX5G5tjIsYXm-9IDz-SX-fnA9/preview",
+    "quizUrl": "./question_bank/unit36_change_management/index.html",
+    "lessonUrl": "./units/unit36_change_management/lesson.md",
+    "qaUrl": "./units/unit36_change_management/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 37,
+    "unitLabel": "Unit 37",
+    "title": "現場で直面する問い：経営・現場・ITへの答え方",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit37_field_questions_stakeholders",
+    "videoUrl": "https://drive.google.com/file/d/1pacW2T0oLhNHZ4t88u1l0yo4VydSXfqV/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1pacW2T0oLhNHZ4t88u1l0yo4VydSXfqV/preview",
+    "quizUrl": "./question_bank/unit37_field_questions_stakeholders/index.html",
+    "lessonUrl": "./units/unit37_field_questions_stakeholders/lesson.md",
+    "qaUrl": "./units/unit37_field_questions_stakeholders/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 38,
+    "unitLabel": "Unit 38",
+    "title": "現場で直面する問い：法務・責任・定着への答え方",
+    "chapter": "Chapter 05",
+    "section": "組織変革",
+    "sectionDescription": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "unitDir": "unit38_field_questions_responsibility",
+    "videoUrl": "https://drive.google.com/file/d/1urY_zjdogjTrA19Dx85mCkJdUstHzkL_/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1urY_zjdogjTrA19Dx85mCkJdUstHzkL_/preview",
+    "quizUrl": "./question_bank/unit38_field_questions_responsibility/index.html",
+    "lessonUrl": "./units/unit38_field_questions_responsibility/lesson.md",
+    "qaUrl": "./units/unit38_field_questions_responsibility/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 39,
+    "unitLabel": "Unit 39",
+    "title": "5Dモデル Step1：Discovery — 発見・選定",
+    "chapter": "Chapter 06",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit39_five_d_discovery",
+    "videoUrl": "https://drive.google.com/file/d/1arUmKC4OSshP8VO4vwVkhKpaE2sPW88q/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1arUmKC4OSshP8VO4vwVkhKpaE2sPW88q/preview",
+    "quizUrl": "./question_bank/unit39_five_d_discovery/index.html",
+    "lessonUrl": "./units/unit39_five_d_discovery/lesson.md",
+    "qaUrl": "./units/unit39_five_d_discovery/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 40,
+    "unitLabel": "Unit 40",
+    "title": "5Dモデル Step2：Definition — 定義・構造化",
+    "chapter": "Chapter 06",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit40_five_d_definition",
+    "videoUrl": "https://drive.google.com/file/d/1kMdTBrSNk04aBTMPIAfyaIFwZ5s1DXMI/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1kMdTBrSNk04aBTMPIAfyaIFwZ5s1DXMI/preview",
+    "quizUrl": "./question_bank/unit40_five_d_definition/index.html",
+    "lessonUrl": "./units/unit40_five_d_definition/lesson.md",
+    "qaUrl": "./units/unit40_five_d_definition/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 41,
+    "unitLabel": "Unit 41",
+    "title": "5Dモデル Step3：Design — 設計・プロンプト",
+    "chapter": "Chapter 06",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit41_five_d_design",
+    "videoUrl": "https://drive.google.com/file/d/1tksC27NPfB_0FVkX2JoqNMb9qySrU9Lh/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1tksC27NPfB_0FVkX2JoqNMb9qySrU9Lh/preview",
+    "quizUrl": "./question_bank/unit41_five_d_design/index.html",
+    "lessonUrl": "./units/unit41_five_d_design/lesson.md",
+    "qaUrl": "./units/unit41_five_d_design/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 42,
+    "unitLabel": "Unit 42",
+    "title": "5Dモデル Step4：Development & PoC — 開発・検証",
+    "chapter": "Chapter 06",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit42_five_d_development_poc",
+    "videoUrl": "https://drive.google.com/file/d/1q4r0lqRDlbDIAO_I6GuItIoh7uPGUgFd/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1q4r0lqRDlbDIAO_I6GuItIoh7uPGUgFd/preview",
+    "quizUrl": "./question_bank/unit42_five_d_development_poc/index.html",
+    "lessonUrl": "./units/unit42_five_d_development_poc/lesson.md",
+    "qaUrl": "./units/unit42_five_d_development_poc/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 43,
+    "unitLabel": "Unit 43",
+    "title": "5Dモデル Step5：Deployment & Scale — 展開・定着",
+    "chapter": "Chapter 06",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit43_five_d_deployment_scale",
+    "videoUrl": "https://drive.google.com/file/d/1RQQCZpHjL5EdqazcumLD56qe4oMWUGlH/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/1RQQCZpHjL5EdqazcumLD56qe4oMWUGlH/preview",
+    "quizUrl": "./question_bank/unit43_five_d_deployment_scale/index.html",
+    "lessonUrl": "./units/unit43_five_d_deployment_scale/lesson.md",
+    "qaUrl": "./units/unit43_five_d_deployment_scale/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 44,
+    "unitLabel": "Unit 44",
+    "title": "試験直前総復習：用語比較とひっかけ整理",
+    "chapter": "全体横断",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit44_exam_final_review",
+    "videoUrl": "https://drive.google.com/file/d/193TeVgIffH9bU3etuPyqkXQNb3GbOBPN/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/193TeVgIffH9bU3etuPyqkXQNb3GbOBPN/preview",
+    "quizUrl": "./question_bank/unit44_exam_final_review/index.html",
+    "lessonUrl": "./units/unit44_exam_final_review/lesson.md",
+    "qaUrl": "./units/unit44_exam_final_review/qa_report.md",
+    "status": "completed_drive_verified"
+  },
+  {
+    "unit": 45,
+    "unitLabel": "Unit 45",
+    "title": "ケース演習：AIエージェント導入プロジェクトを設計する",
+    "chapter": "全体横断",
+    "section": "5D実践・総復習",
+    "sectionDescription": "5Dモデルと試験対策を仕上げる",
+    "unitDir": "unit45_case_simulation",
+    "videoUrl": "https://drive.google.com/file/d/15HUvms44dJO4vaHspdkAXQizn_ceym9n/view?usp=drivesdk",
+    "videoPreviewUrl": "https://drive.google.com/file/d/15HUvms44dJO4vaHspdkAXQizn_ceym9n/preview",
+    "quizUrl": "./question_bank/unit45_case_simulation/index.html",
+    "lessonUrl": "./units/unit45_case_simulation/lesson.md",
+    "qaUrl": "./units/unit45_case_simulation/qa_report.md",
+    "status": "completed_drive_verified"
+  }
+];
+    const SECTIONS = [
+  {
+    "name": "基礎理解",
+    "range": "Unit 01-11",
+    "description": "AI・LLM・エージェントの土台をつかむ",
+    "count": 11
+  },
+  {
+    "name": "業務設計",
+    "range": "Unit 12-15",
+    "description": "As-Is/To-Be、BPR、可視化で導入前の整理をする",
+    "count": 4
+  },
+  {
+    "name": "知識・データ",
+    "range": "Unit 16-22",
+    "description": "ナレッジとデータをAI活用資産に変える",
+    "count": 7
+  },
+  {
+    "name": "プロジェクト",
+    "range": "Unit 23-25",
+    "description": "PoC、効果検証、成功定義を設計する",
+    "count": 3
+  },
+  {
+    "name": "自動化・文脈",
+    "range": "Unit 26-31",
+    "description": "ワークフローとコンテキスト設計を学ぶ",
+    "count": 6
+  },
+  {
+    "name": "組織変革",
+    "range": "Unit 32-38",
+    "description": "文化・評価・人材・現場質問への答え方を学ぶ",
+    "count": 7
+  },
+  {
+    "name": "5D実践・総復習",
+    "range": "Unit 39-45",
+    "description": "5Dモデルと試験対策を仕上げる",
+    "count": 7
+  }
+];
+    const STORAGE_KEY = 'sio-ai-agent-strategist-elearning-progress-v1';
+    const $ = (id) => document.getElementById(id);
+    let state = loadState();
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { video: {}, quiz: {} }; }
+      catch (_) { return { video: {}, quiz: {} }; }
+    }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); updateStats(); }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function isDone(unit, kind) { return Boolean(state[kind] && state[kind][unit]); }
+    function setDone(unit, kind, checked) { state[kind][unit] = checked; saveState(); renderUnits(); }
+    function updateStats() {
+      const video = UNITS.filter(u => isDone(u.unit, 'video')).length;
+      const quiz = UNITS.filter(u => isDone(u.unit, 'quiz')).length;
+      const total = UNITS.length * 2;
+      const done = video + quiz;
+      $('videoDone').textContent = video;
+      $('quizDone').textContent = quiz;
+      $('progressBar').style.width = `${Math.round((done / total) * 100)}%`;
+      $('progressText').textContent = `${done} / ${total} 完了`;
+    }
+    function renderSections() {
+      $('sectionList').innerHTML = SECTIONS.map(s => `<button class="sectionChip" data-section="${escapeHtml(s.name)}"><strong>${escapeHtml(s.name)}</strong><span>${escapeHtml(s.range)} / ${s.count}Unit</span></button>`).join('');
+      const select = $('sectionFilter');
+      SECTIONS.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.name;
+        option.textContent = `${s.name}（${s.range}）`;
+        select.appendChild(option);
+      });
+      document.querySelectorAll('.sectionChip').forEach(btn => btn.addEventListener('click', () => {
+        $('sectionFilter').value = btn.dataset.section;
+        renderUnits();
+        document.getElementById('units').scrollIntoView({ behavior: 'smooth' });
+      }));
+    }
+    function statusMatches(u, filter) {
+      const v = isDone(u.unit, 'video');
+      const q = isDone(u.unit, 'quiz');
+      if (filter === 'done') return v && q;
+      if (filter === 'videoOnly') return v && !q;
+      if (filter === 'quizOnly') return !v && q;
+      if (filter === 'notStarted') return !v && !q;
+      return true;
+    }
+    function filteredUnits() {
+      const query = $('search').value.trim().toLowerCase();
+      const section = $('sectionFilter').value;
+      const status = $('statusFilter').value;
+      return UNITS.filter(u => {
+        const hay = `${u.unitLabel} ${u.title} ${u.chapter} ${u.section}`.toLowerCase();
+        return (!query || hay.includes(query)) && (section === 'all' || u.section === section) && statusMatches(u, status);
+      });
+    }
+    function renderUnits() {
+      const units = filteredUnits();
+      $('resultCount').textContent = `${units.length}件 / 45件`;
+      if (!units.length) { $('unitGrid').innerHTML = '<div class="panel empty" style="grid-column:1/-1;">条件に合うUnitがありません。</div>'; return; }
+      $('unitGrid').innerHTML = units.map(u => {
+        const done = isDone(u.unit, 'video') && isDone(u.unit, 'quiz');
+        return `<article class="unitCard ${done ? 'done' : ''}">
+          <div class="unitTop"><span class="unitNo">${u.unitLabel}</span><span class="sectionBadge">${escapeHtml(u.section)}</span></div>
+          <h3>${escapeHtml(u.title)}</h3>
+          <div class="chapter">${escapeHtml(u.chapter)}</div>
+          <div class="actions">
+            <button class="btn btnSoft previewBtn" data-unit="${u.unit}">動画プレビュー</button>
+            <a class="btn btnGhost" href="${u.videoUrl}" target="_blank" rel="noopener">Driveで開く</a>
+            <a class="btn btnPrimary" href="${u.quizUrl}" target="_blank" rel="noopener">問題を解く</a>
+            <a class="btn btnGhost" href="${u.lessonUrl}" target="_blank" rel="noopener">講義ノート</a>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" data-kind="video" data-unit="${u.unit}" ${isDone(u.unit, 'video') ? 'checked' : ''}> 視聴済み</label>
+            <label class="check"><input type="checkbox" data-kind="quiz" data-unit="${u.unit}" ${isDone(u.unit, 'quiz') ? 'checked' : ''}> 問題済み</label>
+          </div>
+        </article>`;
+      }).join('');
+      document.querySelectorAll('.previewBtn').forEach(btn => btn.addEventListener('click', () => openPreview(Number(btn.dataset.unit))));
+      document.querySelectorAll('.check input').forEach(input => input.addEventListener('change', () => setDone(Number(input.dataset.unit), input.dataset.kind, input.checked)));
+      updateStats();
+    }
+    function openPreview(unitNo) {
+      const unit = UNITS.find(u => u.unit === unitNo);
+      if (!unit) return;
+      $('modalTitle').textContent = `${unit.unitLabel}：${unit.title}`;
+      $('videoFrame').src = unit.videoPreviewUrl;
+      $('videoModal').classList.add('open');
+      $('videoModal').setAttribute('aria-hidden', 'false');
+    }
+    function closePreview() {
+      $('videoModal').classList.remove('open');
+      $('videoModal').setAttribute('aria-hidden', 'true');
+      $('videoFrame').src = '';
+    }
+    $('search').addEventListener('input', renderUnits);
+    $('sectionFilter').addEventListener('change', renderUnits);
+    $('statusFilter').addEventListener('change', renderUnits);
+    $('closeModal').addEventListener('click', closePreview);
+    $('videoModal').addEventListener('click', (e) => { if (e.target.id === 'videoModal') closePreview(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePreview(); });
+    $('resetProgress').addEventListener('click', () => {
+      if (!confirm('このブラウザに保存された進捗をリセットしますか？')) return;
+      state = { video: {}, quiz: {} };
+      saveState();
+      renderUnits();
+    });
+    renderSections();
+    renderUnits();
+  </script>
+</body>
+</html>

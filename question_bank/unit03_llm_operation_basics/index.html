@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Unit03 四択問題集 | AIエージェント・ストラテジスト</title>
+  <style>
+    :root {
+      --bg:#f6f8fb; --panel:#fff; --text:#172033; --muted:#63708a; --line:#dfe6f1;
+      --blue:#2563eb; --blue2:#dbeafe; --green:#10b981; --green2:#dcfce7; --red:#ef4444; --red2:#fee2e2; --orange:#f59e0b;
+      --shadow:0 18px 50px rgba(16,24,40,.10); --radius:24px;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","YuGothic","Noto Sans JP",sans-serif;
+    }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)} body{overflow-x:hidden} button,input,select{font:inherit}
+    .app{width:min(1120px,100%);margin:0 auto;padding:20px clamp(14px,3vw,32px) 64px}
+    .hero{background:linear-gradient(135deg,#fff 0%,#eef5ff 56%,#f7fbff 100%);border:1px solid #e5edf8;border-radius:30px;padding:clamp(18px,4vw,34px);box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero:after{content:"";position:absolute;right:-70px;top:-80px;width:220px;height:220px;background:rgba(37,99,235,.10);border-radius:50%}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;padding:7px 12px;border-radius:999px;font-weight:800;font-size:13px}
+    h1{margin:16px 0 10px;font-size:clamp(26px,5.8vw,44px);line-height:1.12;letter-spacing:-.04em;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
+    .lead{margin:0;color:var(--muted);font-size:clamp(15px,2vw,18px);line-height:1.75;max-width:780px;overflow-wrap:anywhere;word-break:break-word}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+    .stat{background:rgba(255,255,255,.78);border:1px solid #e5edf8;border-radius:18px;padding:12px;min-width:0}.stat b{display:block;font-size:22px;line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+    .progress-shell{height:10px;background:#e8eef8;border-radius:999px;overflow:hidden;margin-top:12px}.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#06b6d4);border-radius:999px;transition:width .2s}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}.control{flex:1 1 180px;min-width:0;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 14px;color:var(--text)}
+    .btn{border:0;border-radius:16px;padding:13px 16px;background:#e8eef8;color:#1f2a44;font-weight:900;cursor:pointer;min-height:48px}.btn.primary{background:var(--blue);color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line)}.btn:active{transform:translateY(1px)}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:18px;align-items:start}
+    .focus-card,.list-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.focus-card{padding:clamp(18px,4vw,30px)}.list-panel{padding:18px}
+    .meta-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.pill{display:inline-flex;border-radius:999px;padding:7px 11px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:900}.pill.blue{background:var(--blue2);color:#1d4ed8}
+    .qtext{font-size:clamp(21px,5.2vw,32px);line-height:1.45;letter-spacing:-.02em;margin:10px 0 18px;font-weight:900;overflow-wrap:anywhere}
+    .choices{display:grid;gap:10px;margin-top:14px}.choice{width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 14px;min-height:58px;display:flex;gap:10px;align-items:flex-start;line-height:1.55;cursor:pointer}
+    .choice .label{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;background:#eef2ff;color:#1d4ed8;font-weight:900}.choice .txt{min-width:0;overflow-wrap:anywhere}
+    .choice.correct{border-color:#22c55e;background:var(--green2)}.choice.wrong{border-color:#f87171;background:var(--red2)}.choice.dim{opacity:.55}
+    .feedback{display:none;margin-top:16px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;line-height:1.75}.feedback.show{display:block}.feedback b.ok{color:#15803d}.feedback b.ng{color:#b91c1c}
+    .point{border-left:4px solid var(--green);padding-left:12px;color:#334155;margin-top:10px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .list-panel h2{margin:0 0 12px;font-size:20px}.cards{display:grid;gap:10px;max-height:620px;overflow:auto;padding-right:4px}
+    .mini{text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;cursor:pointer;min-width:0}.mini.done{border-color:#86efac;background:#f0fdf4}.mini.wrong{border-color:#fca5a5;background:#fff1f2}
+    .mini strong{display:block;font-size:14px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}.mini small{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;color:var(--muted)}
+    @media(max-width:760px){.app{padding:12px 12px 48px}.hero{border-radius:24px}.stats{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.control{flex-basis:100%}.btn{width:100%}.actions{grid-template-columns:1fr}.cards{max-height:none;overflow:visible}}
+    @media(max-width:430px){h1{font-size:clamp(24px,7.1vw,30px);line-height:1.18;letter-spacing:-.035em}.lead{font-size:14px}.hero{padding:18px 20px}}
+    @media(max-width:390px){.app{padding-left:10px;padding-right:10px}.hero,.focus-card,.list-panel{border-radius:20px}.stat b{font-size:20px}.choice{padding:13px 12px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="eyebrow">Unit03 · 四択問題集</div>
+      <h1>LLM運用の基礎<br>トークン・文脈・モデル選定</h1>
+      <p class="lead">スマホで解きやすい四択形式。選択するとすぐ正誤と解説が出ます。Unit03の講義ノート・理解度チェック・試験直前カードから20問に再構成。</p>
+      <div class="stats" aria-label="学習状況">
+        <div class="stat"><b id="statTotal">20</b><span>全問題</span></div><div class="stat"><b id="statCorrect">0</b><span>正解</span></div><div class="stat"><b id="statWrong">0</b><span>復習</span></div><div class="stat"><b id="statRate">0%</b><span>正答率</span></div>
+      </div>
+      <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+    <section class="toolbar" aria-label="操作">
+      <input class="control" id="searchBox" type="search" placeholder="検索：例 リスク / データ / KPI" />
+      <select class="control" id="tagFilter" aria-label="タグ絞り込み"><option value="all">すべてのタグ</option></select>
+      <button class="btn ghost" id="shuffleBtn" type="button">シャッフル</button>
+      <button class="btn ghost" id="resetBtn" type="button">記録リセット</button>
+    </section>
+    <section class="main-grid">
+      <article class="focus-card" aria-live="polite">
+        <div class="meta-row"><span class="pill blue" id="cardIndex">Q 1 / 20</span><span class="pill" id="cardTag">基本</span><span class="pill" id="cardLevel">基本</span></div>
+        <div class="qtext" id="questionText"></div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="actions"><button class="btn ghost" id="prevBtn" type="button">前へ</button><button class="btn primary" id="nextBtn" type="button">次へ</button></div>
+      </article>
+      <aside class="list-panel"><h2>全問リスト</h2><div class="cards" id="cardList"></div></aside>
+    </section>
+  </main>
+  <script>
+  const QUESTIONS = [
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "カスタマーサポート業務に「問い合わせ分類」と「回答文生成」が含まれる場合、モデル構成として適切なのはどれですか。",
+    "options": [
+      "両方とも高性能モデルだけで処理する",
+      "分類は軽量モデル、回答生成は高性能モデルなど、難易度で振り分ける",
+      "分類はLLMでは処理できない",
+      "回答生成には社内データを参照させてはいけない"
+    ],
+    "correct": 1,
+    "explanation": "正解は「分類は軽量モデル、回答生成は高性能モデルなど、難易度で振り分ける」。Unit03の理解度チェックで確認する基本論点。",
+    "point": "分類は軽量モデル、回答生成は高性能モデルなど、難易度で振り分ける",
+    "id": "u03-001"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "長い社内マニュアルを参照させる設計として適切なのはどれですか。",
+    "options": [
+      "毎回全文を入力する",
+      "RAGで関連箇所だけを検索して渡す",
+      "LLMの一般知識だけで対応する",
+      "API費用は固定なので考えなくてよい"
+    ],
+    "correct": 1,
+    "explanation": "正解は「RAGで関連箇所だけを検索して渡す」。Unit03の理解度チェックで確認する基本論点。",
+    "point": "RAGで関連箇所だけを検索して渡す",
+    "id": "u03-002"
+  },
+  {
+    "tag": "理解度チェック",
+    "level": "基本",
+    "question": "API費用の見積もりで重要なのはどれですか。",
+    "options": [
+      "1回あたりのトークン量と月間処理件数",
+      "モデル名の知名度だけ",
+      "初期構築費だけ",
+      "画面デザインだけ"
+    ],
+    "correct": 0,
+    "explanation": "正解は「1回あたりのトークン量と月間処理件数」。Unit03の理解度チェックで確認する基本論点。",
+    "point": "1回あたりのトークン量と月間処理件数",
+    "id": "u03-003"
+  },
+  {
+    "tag": "学習ゴール",
+    "level": "基本",
+    "question": "Unit03の「学習ゴール」で押さえるべき内容は？",
+    "options": [
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「LLMの費用がトークンと処理件数で決まることを理解する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "LLMの費用がトークンと処理件数で決まることを理解する。",
+    "id": "u03-004"
+  },
+  {
+    "tag": "学習ゴール",
+    "level": "基本",
+    "question": "Unit03の「学習ゴール」で押さえるべき内容は？（確認5）",
+    "options": [
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+    "id": "u03-005"
+  },
+  {
+    "tag": "学習ゴール",
+    "level": "基本",
+    "question": "Unit03の「学習ゴール」で押さえるべき内容は？（確認6）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+    "id": "u03-006"
+  },
+  {
+    "tag": "要点",
+    "level": "基本",
+    "question": "Unit03の「要点」で押さえるべき内容は？",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+    "id": "u03-007"
+  },
+  {
+    "tag": "要点",
+    "level": "基本",
+    "question": "Unit03の「要点」で押さえるべき内容は？（確認8）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。",
+    "id": "u03-008"
+  },
+  {
+    "tag": "要点",
+    "level": "標準",
+    "question": "Unit03の「要点」で押さえるべき内容は？（確認9）",
+    "options": [
+      "3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。",
+    "id": "u03-009"
+  },
+  {
+    "tag": "要点",
+    "level": "標準",
+    "question": "Unit03の「要点」で押さえるべき内容は？（確認10）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。",
+    "id": "u03-010"
+  },
+  {
+    "tag": "要点",
+    "level": "標準",
+    "question": "Unit03の「要点」で押さえるべき内容は？（確認11）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。",
+    "id": "u03-011"
+  },
+  {
+    "tag": "要点",
+    "level": "標準",
+    "question": "Unit03の「要点」で押さえるべき内容は？（確認12）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。",
+    "id": "u03-012"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？",
+    "options": [
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+    "id": "u03-013"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認14）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "2. コンテキストウィンドウが大きくなっても、毎回全文を入力する設計はコスト面で合理的とは限らない。",
+    "id": "u03-014"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認15）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "3. RAGは必要な情報だけを検索して渡す仕組みであり、精度は自社データの整備状態にも依存する。",
+    "id": "u03-015"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認16）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "4. ヘルプデスク業務のように、分類という識別と、回答文作成という生成が混在する業務は多い。",
+    "id": "u03-016"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認17）",
+    "options": [
+      "5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 0,
+    "explanation": "正解は「5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "5. モデルルーティングにより、軽量モデルと高性能モデルを使い分け、コストと品質を両立する。",
+    "id": "u03-017"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認18）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。"
+    ],
+    "correct": 1,
+    "explanation": "正解は「6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "6. 導入判断ではAPI費用だけでなく、構築・運用・保守を含むTCOで見る。",
+    "id": "u03-018"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認19）",
+    "options": [
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。"
+    ],
+    "correct": 2,
+    "explanation": "正解は「LLMの費用がトークンと処理件数で決まることを理解する。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "LLMの費用がトークンと処理件数で決まることを理解する。",
+    "id": "u03-019"
+  },
+  {
+    "tag": "追加確認",
+    "level": "標準",
+    "question": "Unit03の要点として最も適切なものは？（確認20）",
+    "options": [
+      "LLMの費用がトークンと処理件数で決まることを理解する。",
+      "RAG、モデルルーティング、TCOを使って、業務AIの運用設計を説明できる。",
+      "1. LLMのAPI利用料は、多くの場合、入力・出力のトークン数に応じて従量課金される。",
+      "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。"
+    ],
+    "correct": 3,
+    "explanation": "正解は「コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。」。Unit03では、この観点を業務導入の判断材料として押さえる。",
+    "point": "コンテキストウィンドウは「入る量」ではなく「渡すべき量」の設計問題として捉える。",
+    "id": "u03-020"
+  }
+];
+  const stateKey = 'sio-unit03_llm_operation_basics-four-choice-v1';
+  let order = QUESTIONS.map((_, i) => i); let current = 0; let selected = null; let progress = loadProgress();
+  const $ = id => document.getElementById(id);
+  const els = {total:$('statTotal'),correct:$('statCorrect'),wrong:$('statWrong'),rate:$('statRate'),bar:$('progressBar'),q:$('questionText'),choices:$('choices'),feedback:$('feedback'),cardIndex:$('cardIndex'),cardTag:$('cardTag'),cardLevel:$('cardLevel'),list:$('cardList'),tagFilter:$('tagFilter'),search:$('searchBox')};
+  function loadProgress(){try{return JSON.parse(localStorage.getItem(stateKey))||{}}catch{return {}}} function saveProgress(){localStorage.setItem(stateKey,JSON.stringify(progress))}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function tags(){return [...new Set(QUESTIONS.map(q=>q.tag))]}
+  function filteredOrder(){const term=els.search.value.trim().toLowerCase();const tag=els.tagFilter.value;return order.filter(i=>{const q=QUESTIONS[i];const hay=`${q.question} ${q.options.join(' ')} ${q.explanation} ${q.point} ${q.tag}`.toLowerCase();return (tag==='all'||q.tag===tag)&&(!term||hay.includes(term));})}
+  function safeList(){const list=filteredOrder(); if(!list.length)return []; if(current>=list.length)current=list.length-1; if(current<0)current=0; return list;}
+  function renderStats(){const vals=Object.values(progress); const correct=vals.filter(v=>v==='correct').length; const wrong=vals.filter(v=>v==='wrong').length; const answered=correct+wrong; const rate=answered?Math.round(correct/answered*100):0; els.total.textContent=QUESTIONS.length; els.correct.textContent=correct; els.wrong.textContent=wrong; els.rate.textContent=`${rate}%`; els.bar.style.width=`${Math.round(answered/QUESTIONS.length*100)}%`;}
+  function renderFocus(){const list=safeList(); selected=null; els.feedback.classList.remove('show'); if(!list.length){els.cardIndex.textContent='該当なし';els.cardTag.textContent='-';els.cardLevel.textContent='-';els.q.textContent='条件に合う問題がありません。';els.choices.innerHTML='';return;} const q=QUESTIONS[list[current]]; els.cardIndex.textContent=`Q ${current+1} / ${list.length}`; els.cardTag.textContent=q.tag; els.cardLevel.textContent=q.level; els.q.textContent=q.question; els.choices.innerHTML=q.options.map((opt,i)=>`<button class="choice" data-choice="${i}" type="button"><span class="label">${String.fromCharCode(65+i)}</span><span class="txt">${escapeHtml(opt)}</span></button>`).join(''); els.choices.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>choose(Number(btn.dataset.choice))));}
+  function choose(i){const list=safeList(); if(!list.length)return; const q=QUESTIONS[list[current]]; selected=i; const ok=i===q.correct; progress[q.id]=ok?'correct':'wrong'; saveProgress(); els.choices.querySelectorAll('.choice').forEach((btn,idx)=>{btn.disabled=true; if(idx===q.correct)btn.classList.add('correct'); else if(idx===i)btn.classList.add('wrong'); else btn.classList.add('dim');}); els.feedback.innerHTML=`<b class="${ok?'ok':'ng'}">${ok?'正解':'不正解'}</b><br>${escapeHtml(q.explanation)}<div class="point"><b>ポイント：</b>${escapeHtml(q.point)}</div>`; els.feedback.classList.add('show'); renderStats(); renderList();}
+  function renderList(){const list=filteredOrder(); els.list.innerHTML=list.map((i,pos)=>{const q=QUESTIONS[i];const st=progress[q.id]||'';const label=st==='correct'?'正解':st==='wrong'?'復習':'未回答';return `<button class="mini ${st==='correct'?'done':st==='wrong'?'wrong':''}" data-pos="${pos}" type="button"><strong>${pos+1}. ${escapeHtml(q.question)}</strong><small><span>${escapeHtml(q.tag)}</span><span>${escapeHtml(q.level)}</span><span>${label}</span></small></button>`;}).join(''); els.list.querySelectorAll('.mini').forEach(btn=>btn.addEventListener('click',()=>{current=Number(btn.dataset.pos);renderFocus();window.scrollTo({top:document.querySelector('.focus-card').offsetTop-10,behavior:'smooth'})}));}
+  function renderAll(){renderStats();renderFocus();renderList();}
+  function setup(){for(const tag of tags()){const opt=document.createElement('option');opt.value=tag;opt.textContent=tag;els.tagFilter.appendChild(opt)} $('nextBtn').addEventListener('click',()=>{const list=safeList(); if(current<list.length-1)current++; renderFocus();}); $('prevBtn').addEventListener('click',()=>{if(current>0)current--; renderFocus();}); $('shuffleBtn').addEventListener('click',()=>{order=order.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);current=0;renderAll();}); $('resetBtn').addEventListener('click',()=>{if(confirm('学習記録をリセットしますか？')){progress={};saveProgress();renderAll();}}); els.search.addEventListener('input',()=>{current=0;renderAll();}); els.tagFilter.addEventListener('change',()=>{current=0;renderAll();}); renderAll();}
+  window.addEventListener('DOMContentLoaded', setup);
+  </script>
+</body>
+</html>
