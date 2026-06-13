@@ -1,8 +1,6 @@
 {
-  "deploy_dir": "/Users/clawuser/SiO-Brain/projects/ai-agent-strategist-course/elearning_v2/deploy/github_pages",
   "file_count": 283,
-  "index_exists": true,
   "question_bank_html_count": 45,
   "unit_lesson_count": 45,
-  "sha256_index": "daf9a19d05b8cbcbbd7c4c3672737611c28a8e7260a5961c10fc88751e4310d5"
+  "sha256_index": "7b275089cda1598f625e45e6d772bdade22ca037a3c02d9e3addae3481046ec2"
 }
