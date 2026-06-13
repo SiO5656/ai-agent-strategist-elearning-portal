@@ -2,5 +2,14 @@
   "file_count": 283,
   "question_bank_html_count": 45,
   "unit_lesson_count": 45,
-  "sha256_index": "7b275089cda1598f625e45e6d772bdade22ca037a3c02d9e3addae3481046ec2"
+  "sha256_index": "7b275089cda1598f625e45e6d772bdade22ca037a3c02d9e3addae3481046ec2",
+  "updated_at": "2026-06-13T13:00:00+09:00",
+  "features": {
+    "units": 45,
+    "quiz_questions": 900,
+    "case_bank_cases": 100,
+    "case_categories": 10
+  },
+  "public_url": "https://sio5656.github.io/ai-agent-strategist-elearning-portal/",
+  "case_bank_url": "https://sio5656.github.io/ai-agent-strategist-elearning-portal/case_bank/"
 }

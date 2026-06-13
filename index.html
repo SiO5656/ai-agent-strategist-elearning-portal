@@ -57,6 +57,9 @@
     .stat { background: #fff; border:1px solid var(--line); border-radius: 18px; padding: 16px; }
     .stat b { display:block; font-size: 30px; line-height:1.05; }
     .stat span { color: var(--muted); font-size: 13px; }
+    .featureGrid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:16px; }
+    .featureCard { background:#fff; border:1px solid var(--line); border-radius:22px; padding:20px; min-width:0; box-shadow: 0 8px 22px rgba(24,34,61,.06); }
+    .featureCard strong { display:block; font-size:18px; margin-bottom:6px; }
     .progressOuter { height: 12px; background:#edf0f7; border-radius:999px; overflow:hidden; margin-top: 12px; }
     .progressInner { height: 100%; width:0%; background: linear-gradient(90deg, var(--brand), var(--brand2)); transition: width .25s ease; }
     section { padding: 24px 0; }
@@ -94,6 +97,7 @@
     @media (max-width: 980px) {
       .heroGrid { grid-template-columns: 1fr; }
       .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .featureGrid { grid-template-columns: 1fr; }
       .sections { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .toolbar { grid-template-columns: 1fr; }
     }
@@ -121,6 +125,7 @@
       <div class="brand"><div class="mark">AI</div><div>AIエージェント・ストラテジスト<br><span class="muted">eラーニングポータル</span></div></div>
       <nav class="navlinks" aria-label="ページ内リンク">
         <a class="pill" href="#units">Unit一覧</a>
+        <a class="pill" href="case_bank/index.html">ケース100選</a>
         <a class="pill" href="#sections">カテゴリ</a>
         <a class="pill" href="#howto">開き方</a>
       </nav>
@@ -131,23 +136,39 @@
     <div class="wrap hero">
       <div class="heroGrid">
         <div class="heroCard">
-          <div class="eyebrow">動画 × 四択問題集を1ページに統合</div>
-          <h1>全45Unitを<br>見て、解いて、<br>進捗管理。</h1>
-          <p class="lead">Drive上の講義動画と、同梱された四択HTML問題集へすぐ移動できる学習入口です。検索・カテゴリ絞り込み・視聴済み/問題済みチェックはこのブラウザに保存されます。</p>
+          <div class="eyebrow">動画 × 四択 × 実践ケースで学ぶ</div>
+          <h1>全45Unitを<br>見て、解いて、<br>実務判断まで。</h1>
+          <p class="lead">Drive上の講義動画、四択HTML問題集、実践ケース問題100選へすぐ移動できる学習入口です。検索・カテゴリ絞り込み・視聴済み/問題済みチェックはこのブラウザに保存されます。</p>
           <div class="ctaRow">
             <a class="btn btnPrimary" href="#units">学習を始める</a>
+            <a class="btn btnGhost" href="case_bank/index.html">ケース100選を解く</a>
             <button class="btn btnGhost" id="resetProgress">進捗をリセット</button>
           </div>
         </div>
         <aside class="panel stats" aria-label="学習状況">
           <div class="stat"><b>45</b><span>動画Unit</span></div>
           <div class="stat"><b>900</b><span>四択問題</span></div>
+          <div class="stat"><b>100</b><span>実践ケース</span></div>
           <div class="stat"><b id="videoDone">0</b><span>視聴済み</span></div>
           <div class="stat"><b id="quizDone">0</b><span>問題済み</span></div>
           <div class="stat" style="grid-column:1/-1;"><span>総合進捗</span><div class="progressOuter"><div class="progressInner" id="progressBar"></div></div><p class="muted" id="progressText">0 / 90 完了</p></div>
         </aside>
       </div>
     </div>
+
+    <section id="practice">
+      <div class="wrap">
+        <div class="sectionTitle"><h2>実践強化メニュー</h2><p class="muted">確認テストの次は、現場判断を鍛える</p></div>
+        <div class="featureGrid">
+          <a class="featureCard" href="case_bank/index.html" style="text-decoration:none;">
+            <strong>実践ケース問題100選</strong>
+            <span class="muted">「正しい対応」「不適切な対応」「最初の一手」「高リスク」「次の確認」を混ぜたケーススタディ。</span>
+          </a>
+          <div class="featureCard"><strong>間違い復習</strong><span class="muted">ケースページ内で間違えた問題だけを絞り込み、判断軸を確認できます。</span></div>
+          <div class="featureCard"><strong>自分用メモ</strong><span class="muted">各ケースに「自分の職場なら？」を残し、学習を実務へ接続します。</span></div>
+        </div>
+      </div>
+    </section>
 
     <section id="sections">
       <div class="wrap">
@@ -171,7 +192,7 @@
     <section id="howto">
       <div class="wrap panel" style="padding:22px;">
         <h2>開き方</h2>
-        <p>ZIPを展開して、この `elearning_page/index.html` をブラウザで開いてください。問題集は同梱の `question_bank/` を相対リンクで開きます。動画はGoogle Driveにログイン済みのブラウザで開くと視聴できます。</p>
+        <p>公開URLまたはZIP展開後の `elearning_page/index.html` をブラウザで開いてください。問題集は `question_bank/`、ケース問題100選は `case_bank/` を相対リンクで開きます。動画はGoogle Driveにログイン済みのブラウザで開くと視聴できます。</p>
       </div>
     </section>
   </main>
@@ -185,7 +206,7 @@
   </div>
 
   <footer>
-    <div class="wrap">Generated: 2026-06-13 12:22 JST / Deployed static portal: GitHub Pages + question_bank</div>
+    <div class="wrap">Generated: 2026-06-13 13:31 JST / Source: course_manifest.json + question_bank + case_bank</div>
   </footer>
 
   <script>
@@ -200,9 +221,9 @@
     "unitDir": "unit01_course_orientation",
     "videoUrl": "https://drive.google.com/file/d/1QECygfkb3YOHjn4N4dFHITY9LXGqwB27/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1QECygfkb3YOHjn4N4dFHITY9LXGqwB27/preview",
-    "quizUrl": "./question_bank/unit01_course_orientation/index.html",
-    "lessonUrl": "./units/unit01_course_orientation/lesson.md",
-    "qaUrl": "./units/unit01_course_orientation/qa_report.md",
+    "quizUrl": "question_bank/unit01_course_orientation/index.html",
+    "lessonUrl": "units/unit01_course_orientation/lesson.md",
+    "qaUrl": "units/unit01_course_orientation/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -215,9 +236,9 @@
     "unitDir": "unit02_genai_mechanism",
     "videoUrl": "https://drive.google.com/file/d/1b5g-LyEEW34R4J63hDU0LGE5TVkWdhf6/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1b5g-LyEEW34R4J63hDU0LGE5TVkWdhf6/preview",
-    "quizUrl": "./question_bank/unit02_genai_mechanism/index.html",
-    "lessonUrl": "./units/unit02_genai_mechanism/lesson.md",
-    "qaUrl": "./units/unit02_genai_mechanism/qa_report.md",
+    "quizUrl": "question_bank/unit02_genai_mechanism/index.html",
+    "lessonUrl": "units/unit02_genai_mechanism/lesson.md",
+    "qaUrl": "units/unit02_genai_mechanism/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -230,9 +251,9 @@
     "unitDir": "unit03_llm_operation_basics",
     "videoUrl": "https://drive.google.com/file/d/16KwbndOwo1olPit-HVSZHAOe6CBXvqHf/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/16KwbndOwo1olPit-HVSZHAOe6CBXvqHf/preview",
-    "quizUrl": "./question_bank/unit03_llm_operation_basics/index.html",
-    "lessonUrl": "./units/unit03_llm_operation_basics/lesson.md",
-    "qaUrl": "./units/unit03_llm_operation_basics/qa_report.md",
+    "quizUrl": "question_bank/unit03_llm_operation_basics/index.html",
+    "lessonUrl": "units/unit03_llm_operation_basics/lesson.md",
+    "qaUrl": "units/unit03_llm_operation_basics/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -245,9 +266,9 @@
     "unitDir": "unit04_agent_definition",
     "videoUrl": "https://drive.google.com/file/d/1xCgwNzRMTLslvfUEYf_M9v7wmMtSHAzb/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1xCgwNzRMTLslvfUEYf_M9v7wmMtSHAzb/preview",
-    "quizUrl": "./question_bank/unit04_agent_definition/index.html",
-    "lessonUrl": "./units/unit04_agent_definition/lesson.md",
-    "qaUrl": "./units/unit04_agent_definition/qa_report.md",
+    "quizUrl": "question_bank/unit04_agent_definition/index.html",
+    "lessonUrl": "units/unit04_agent_definition/lesson.md",
+    "qaUrl": "units/unit04_agent_definition/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -260,9 +281,9 @@
     "unitDir": "unit05_agent_components_autonomy",
     "videoUrl": "https://drive.google.com/file/d/1r07_zdkddOwCtY06_s2To40ij2P0QmjC/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1r07_zdkddOwCtY06_s2To40ij2P0QmjC/preview",
-    "quizUrl": "./question_bank/unit05_agent_components_autonomy/index.html",
-    "lessonUrl": "./units/unit05_agent_components_autonomy/lesson.md",
-    "qaUrl": "./units/unit05_agent_components_autonomy/qa_report.md",
+    "quizUrl": "question_bank/unit05_agent_components_autonomy/index.html",
+    "lessonUrl": "units/unit05_agent_components_autonomy/lesson.md",
+    "qaUrl": "units/unit05_agent_components_autonomy/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -275,9 +296,9 @@
     "unitDir": "unit06_agent_trigger_types",
     "videoUrl": "https://drive.google.com/file/d/1TfIGuDfdLU6Qdj6EEiW91tRKAmj6d6kW/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1TfIGuDfdLU6Qdj6EEiW91tRKAmj6d6kW/preview",
-    "quizUrl": "./question_bank/unit06_agent_trigger_types/index.html",
-    "lessonUrl": "./units/unit06_agent_trigger_types/lesson.md",
-    "qaUrl": "./units/unit06_agent_trigger_types/qa_report.md",
+    "quizUrl": "question_bank/unit06_agent_trigger_types/index.html",
+    "lessonUrl": "units/unit06_agent_trigger_types/lesson.md",
+    "qaUrl": "units/unit06_agent_trigger_types/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -290,9 +311,9 @@
     "unitDir": "unit07_rpa_vs_agent",
     "videoUrl": "https://drive.google.com/file/d/1AAbhhsjpNxuzQzDiQcw8fO1IENVueq6u/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1AAbhhsjpNxuzQzDiQcw8fO1IENVueq6u/preview",
-    "quizUrl": "./question_bank/unit07_rpa_vs_agent/index.html",
-    "lessonUrl": "./units/unit07_rpa_vs_agent/lesson.md",
-    "qaUrl": "./units/unit07_rpa_vs_agent/qa_report.md",
+    "quizUrl": "question_bank/unit07_rpa_vs_agent/index.html",
+    "lessonUrl": "units/unit07_rpa_vs_agent/lesson.md",
+    "qaUrl": "units/unit07_rpa_vs_agent/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -305,9 +326,9 @@
     "unitDir": "unit08_mcp_connection_standard",
     "videoUrl": "https://drive.google.com/file/d/1wtfcmUjYlIslUP_l-yv1WrRr2UCPiWHr/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1wtfcmUjYlIslUP_l-yv1WrRr2UCPiWHr/preview",
-    "quizUrl": "./question_bank/unit08_mcp_connection_standard/index.html",
-    "lessonUrl": "./units/unit08_mcp_connection_standard/lesson.md",
-    "qaUrl": "./units/unit08_mcp_connection_standard/qa_report.md",
+    "quizUrl": "question_bank/unit08_mcp_connection_standard/index.html",
+    "lessonUrl": "units/unit08_mcp_connection_standard/lesson.md",
+    "qaUrl": "units/unit08_mcp_connection_standard/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -320,9 +341,9 @@
     "unitDir": "unit09_agent_business_value",
     "videoUrl": "https://drive.google.com/file/d/1uayj0f0g6EqqkDa3SbAZ5WWaU8MvukWl/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1uayj0f0g6EqqkDa3SbAZ5WWaU8MvukWl/preview",
-    "quizUrl": "./question_bank/unit09_agent_business_value/index.html",
-    "lessonUrl": "./units/unit09_agent_business_value/lesson.md",
-    "qaUrl": "./units/unit09_agent_business_value/qa_report.md",
+    "quizUrl": "question_bank/unit09_agent_business_value/index.html",
+    "lessonUrl": "units/unit09_agent_business_value/lesson.md",
+    "qaUrl": "units/unit09_agent_business_value/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -335,9 +356,9 @@
     "unitDir": "unit10_agent_risk_controls",
     "videoUrl": "https://drive.google.com/file/d/1yhEhBEFEaBYKLSA0wd09IthdDgBlStwk/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1yhEhBEFEaBYKLSA0wd09IthdDgBlStwk/preview",
-    "quizUrl": "./question_bank/unit10_agent_risk_controls/index.html",
-    "lessonUrl": "./units/unit10_agent_risk_controls/lesson.md",
-    "qaUrl": "./units/unit10_agent_risk_controls/qa_report.md",
+    "quizUrl": "question_bank/unit10_agent_risk_controls/index.html",
+    "lessonUrl": "units/unit10_agent_risk_controls/lesson.md",
+    "qaUrl": "units/unit10_agent_risk_controls/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -350,9 +371,9 @@
     "unitDir": "unit11_genai_trends",
     "videoUrl": "https://drive.google.com/file/d/1TUCoH1g4U5cs9hgS4hLEm5elmQ-3pmJX/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1TUCoH1g4U5cs9hgS4hLEm5elmQ-3pmJX/preview",
-    "quizUrl": "./question_bank/unit11_genai_trends/index.html",
-    "lessonUrl": "./units/unit11_genai_trends/lesson.md",
-    "qaUrl": "./units/unit11_genai_trends/qa_report.md",
+    "quizUrl": "question_bank/unit11_genai_trends/index.html",
+    "lessonUrl": "units/unit11_genai_trends/lesson.md",
+    "qaUrl": "units/unit11_genai_trends/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -365,9 +386,9 @@
     "unitDir": "unit12_business_as_is_to_be",
     "videoUrl": "https://drive.google.com/file/d/1Dt_zAG7cFQvnjZxqub2YK1-pvRqe_rqe/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1Dt_zAG7cFQvnjZxqub2YK1-pvRqe_rqe/preview",
-    "quizUrl": "./question_bank/unit12_business_as_is_to_be/index.html",
-    "lessonUrl": "./units/unit12_business_as_is_to_be/lesson.md",
-    "qaUrl": "./units/unit12_business_as_is_to_be/qa_report.md",
+    "quizUrl": "question_bank/unit12_business_as_is_to_be/index.html",
+    "lessonUrl": "units/unit12_business_as_is_to_be/lesson.md",
+    "qaUrl": "units/unit12_business_as_is_to_be/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -380,9 +401,9 @@
     "unitDir": "unit13_business_gap_analysis",
     "videoUrl": "https://drive.google.com/file/d/1X_Ckkp8tpITApZAQi_woBBaY2f191BZ8/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1X_Ckkp8tpITApZAQi_woBBaY2f191BZ8/preview",
-    "quizUrl": "./question_bank/unit13_business_gap_analysis/index.html",
-    "lessonUrl": "./units/unit13_business_gap_analysis/lesson.md",
-    "qaUrl": "./units/unit13_business_gap_analysis/qa_report.md",
+    "quizUrl": "question_bank/unit13_business_gap_analysis/index.html",
+    "lessonUrl": "units/unit13_business_gap_analysis/lesson.md",
+    "qaUrl": "units/unit13_business_gap_analysis/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -395,9 +416,9 @@
     "unitDir": "unit14_bpr_ecrs",
     "videoUrl": "https://drive.google.com/file/d/1fVIDt9gPp2fEgJo6F5X7-cCVnf3hOBrW/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1fVIDt9gPp2fEgJo6F5X7-cCVnf3hOBrW/preview",
-    "quizUrl": "./question_bank/unit14_bpr_ecrs/index.html",
-    "lessonUrl": "./units/unit14_bpr_ecrs/lesson.md",
-    "qaUrl": "./units/unit14_bpr_ecrs/qa_report.md",
+    "quizUrl": "question_bank/unit14_bpr_ecrs/index.html",
+    "lessonUrl": "units/unit14_bpr_ecrs/lesson.md",
+    "qaUrl": "units/unit14_bpr_ecrs/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -410,9 +431,9 @@
     "unitDir": "unit15_business_visualization",
     "videoUrl": "https://drive.google.com/file/d/1_H2oybLQ3WpD4oPNaDF-hmE4_Wn9MJd1/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1_H2oybLQ3WpD4oPNaDF-hmE4_Wn9MJd1/preview",
-    "quizUrl": "./question_bank/unit15_business_visualization/index.html",
-    "lessonUrl": "./units/unit15_business_visualization/lesson.md",
-    "qaUrl": "./units/unit15_business_visualization/qa_report.md",
+    "quizUrl": "question_bank/unit15_business_visualization/index.html",
+    "lessonUrl": "units/unit15_business_visualization/lesson.md",
+    "qaUrl": "units/unit15_business_visualization/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -425,9 +446,9 @@
     "unitDir": "unit16_knowledge_seci",
     "videoUrl": "https://drive.google.com/file/d/102G1TyQ_3WUF7lZGEUSluR29W23YIfUK/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/102G1TyQ_3WUF7lZGEUSluR29W23YIfUK/preview",
-    "quizUrl": "./question_bank/unit16_knowledge_seci/index.html",
-    "lessonUrl": "./units/unit16_knowledge_seci/lesson.md",
-    "qaUrl": "./units/unit16_knowledge_seci/qa_report.md",
+    "quizUrl": "question_bank/unit16_knowledge_seci/index.html",
+    "lessonUrl": "units/unit16_knowledge_seci/lesson.md",
+    "qaUrl": "units/unit16_knowledge_seci/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -440,9 +461,9 @@
     "unitDir": "unit17_knowledge_to_ai_asset",
     "videoUrl": "https://drive.google.com/file/d/1BFZE3KYvRCdlfbhWXQjPhzlAtMzefeDj/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1BFZE3KYvRCdlfbhWXQjPhzlAtMzefeDj/preview",
-    "quizUrl": "./question_bank/unit17_knowledge_to_ai_asset/index.html",
-    "lessonUrl": "./units/unit17_knowledge_to_ai_asset/lesson.md",
-    "qaUrl": "./units/unit17_knowledge_to_ai_asset/qa_report.md",
+    "quizUrl": "question_bank/unit17_knowledge_to_ai_asset/index.html",
+    "lessonUrl": "units/unit17_knowledge_to_ai_asset/lesson.md",
+    "qaUrl": "units/unit17_knowledge_to_ai_asset/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -455,9 +476,9 @@
     "unitDir": "unit18_data_types_metadata",
     "videoUrl": "https://drive.google.com/file/d/1W-tHBdLlQIsaSS4PqPImbwwEpq4Ecpag/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1W-tHBdLlQIsaSS4PqPImbwwEpq4Ecpag/preview",
-    "quizUrl": "./question_bank/unit18_data_types_metadata/index.html",
-    "lessonUrl": "./units/unit18_data_types_metadata/lesson.md",
-    "qaUrl": "./units/unit18_data_types_metadata/qa_report.md",
+    "quizUrl": "question_bank/unit18_data_types_metadata/index.html",
+    "lessonUrl": "units/unit18_data_types_metadata/lesson.md",
+    "qaUrl": "units/unit18_data_types_metadata/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -470,9 +491,9 @@
     "unitDir": "unit19_rag_mechanism",
     "videoUrl": "https://drive.google.com/file/d/1Do1RREoWawTbj5LhWpoHBeo4mdLZKzsX/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1Do1RREoWawTbj5LhWpoHBeo4mdLZKzsX/preview",
-    "quizUrl": "./question_bank/unit19_rag_mechanism/index.html",
-    "lessonUrl": "./units/unit19_rag_mechanism/lesson.md",
-    "qaUrl": "./units/unit19_rag_mechanism/qa_report.md",
+    "quizUrl": "question_bank/unit19_rag_mechanism/index.html",
+    "lessonUrl": "units/unit19_rag_mechanism/lesson.md",
+    "qaUrl": "units/unit19_rag_mechanism/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -485,9 +506,9 @@
     "unitDir": "unit20_ai_governance_legal",
     "videoUrl": "https://drive.google.com/file/d/1cGijU6PGTJ4A6l7YBUwyvhYTWkFfETvo/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1cGijU6PGTJ4A6l7YBUwyvhYTWkFfETvo/preview",
-    "quizUrl": "./question_bank/unit20_ai_governance_legal/index.html",
-    "lessonUrl": "./units/unit20_ai_governance_legal/lesson.md",
-    "qaUrl": "./units/unit20_ai_governance_legal/qa_report.md",
+    "quizUrl": "question_bank/unit20_ai_governance_legal/index.html",
+    "lessonUrl": "units/unit20_ai_governance_legal/lesson.md",
+    "qaUrl": "units/unit20_ai_governance_legal/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -500,9 +521,9 @@
     "unitDir": "unit21_ai_readable_data_design",
     "videoUrl": "https://drive.google.com/file/d/1GvGk2_9drNhEsbPYSYtH5OkPJnt9tunL/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1GvGk2_9drNhEsbPYSYtH5OkPJnt9tunL/preview",
-    "quizUrl": "./question_bank/unit21_ai_readable_data_design/index.html",
-    "lessonUrl": "./units/unit21_ai_readable_data_design/lesson.md",
-    "qaUrl": "./units/unit21_ai_readable_data_design/qa_report.md",
+    "quizUrl": "question_bank/unit21_ai_readable_data_design/index.html",
+    "lessonUrl": "units/unit21_ai_readable_data_design/lesson.md",
+    "qaUrl": "units/unit21_ai_readable_data_design/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -515,9 +536,9 @@
     "unitDir": "unit22_data_asset_practice",
     "videoUrl": "https://drive.google.com/file/d/1JGzoq68CizqWhb5E8kJj1798UEyG9BI4/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1JGzoq68CizqWhb5E8kJj1798UEyG9BI4/preview",
-    "quizUrl": "./question_bank/unit22_data_asset_practice/index.html",
-    "lessonUrl": "./units/unit22_data_asset_practice/lesson.md",
-    "qaUrl": "./units/unit22_data_asset_practice/qa_report.md",
+    "quizUrl": "question_bank/unit22_data_asset_practice/index.html",
+    "lessonUrl": "units/unit22_data_asset_practice/lesson.md",
+    "qaUrl": "units/unit22_data_asset_practice/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -530,9 +551,9 @@
     "unitDir": "unit23_ai_project_poc",
     "videoUrl": "https://drive.google.com/file/d/1rmTGXzeX03AXcDpvj3NRIcN9FPc_oZ9m/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1rmTGXzeX03AXcDpvj3NRIcN9FPc_oZ9m/preview",
-    "quizUrl": "./question_bank/unit23_ai_project_poc/index.html",
-    "lessonUrl": "./units/unit23_ai_project_poc/lesson.md",
-    "qaUrl": "./units/unit23_ai_project_poc/qa_report.md",
+    "quizUrl": "question_bank/unit23_ai_project_poc/index.html",
+    "lessonUrl": "units/unit23_ai_project_poc/lesson.md",
+    "qaUrl": "units/unit23_ai_project_poc/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -545,9 +566,9 @@
     "unitDir": "unit24_ai_project_effect_design",
     "videoUrl": "https://drive.google.com/file/d/1izFT1MInvvm-rK5z-5LPF0pTn38g27Lq/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1izFT1MInvvm-rK5z-5LPF0pTn38g27Lq/preview",
-    "quizUrl": "./question_bank/unit24_ai_project_effect_design/index.html",
-    "lessonUrl": "./units/unit24_ai_project_effect_design/lesson.md",
-    "qaUrl": "./units/unit24_ai_project_effect_design/qa_report.md",
+    "quizUrl": "question_bank/unit24_ai_project_effect_design/index.html",
+    "lessonUrl": "units/unit24_ai_project_effect_design/lesson.md",
+    "qaUrl": "units/unit24_ai_project_effect_design/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -560,9 +581,9 @@
     "unitDir": "unit25_success_three_layers",
     "videoUrl": "https://drive.google.com/file/d/1ILCM6pXTtiy2WDc3oJE7UuSQPDog7SY3/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1ILCM6pXTtiy2WDc3oJE7UuSQPDog7SY3/preview",
-    "quizUrl": "./question_bank/unit25_success_three_layers/index.html",
-    "lessonUrl": "./units/unit25_success_three_layers/lesson.md",
-    "qaUrl": "./units/unit25_success_three_layers/qa_report.md",
+    "quizUrl": "question_bank/unit25_success_three_layers/index.html",
+    "lessonUrl": "units/unit25_success_three_layers/lesson.md",
+    "qaUrl": "units/unit25_success_three_layers/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -575,9 +596,9 @@
     "unitDir": "unit26_automation_levels",
     "videoUrl": "https://drive.google.com/file/d/1aR3mF3SLo8N2BJ1_GfficRNM7wpw16gG/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1aR3mF3SLo8N2BJ1_GfficRNM7wpw16gG/preview",
-    "quizUrl": "./question_bank/unit26_automation_levels/index.html",
-    "lessonUrl": "./units/unit26_automation_levels/lesson.md",
-    "qaUrl": "./units/unit26_automation_levels/qa_report.md",
+    "quizUrl": "question_bank/unit26_automation_levels/index.html",
+    "lessonUrl": "units/unit26_automation_levels/lesson.md",
+    "qaUrl": "units/unit26_automation_levels/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -590,9 +611,9 @@
     "unitDir": "unit27_workflow_trigger_action",
     "videoUrl": "https://drive.google.com/file/d/11qZWYVa4V4FLACKM8Bam5q-Z731id6yX/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/11qZWYVa4V4FLACKM8Bam5q-Z731id6yX/preview",
-    "quizUrl": "./question_bank/unit27_workflow_trigger_action/index.html",
-    "lessonUrl": "./units/unit27_workflow_trigger_action/lesson.md",
-    "qaUrl": "./units/unit27_workflow_trigger_action/qa_report.md",
+    "quizUrl": "question_bank/unit27_workflow_trigger_action/index.html",
+    "lessonUrl": "units/unit27_workflow_trigger_action/lesson.md",
+    "qaUrl": "units/unit27_workflow_trigger_action/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -605,9 +626,9 @@
     "unitDir": "unit28_workflow_execution_patterns",
     "videoUrl": "https://drive.google.com/file/d/12Zc7CfkttHY2RY9bRvWUfBHReY3dfGEv/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/12Zc7CfkttHY2RY9bRvWUfBHReY3dfGEv/preview",
-    "quizUrl": "./question_bank/unit28_workflow_execution_patterns/index.html",
-    "lessonUrl": "./units/unit28_workflow_execution_patterns/lesson.md",
-    "qaUrl": "./units/unit28_workflow_execution_patterns/qa_report.md",
+    "quizUrl": "question_bank/unit28_workflow_execution_patterns/index.html",
+    "lessonUrl": "units/unit28_workflow_execution_patterns/lesson.md",
+    "qaUrl": "units/unit28_workflow_execution_patterns/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -620,9 +641,9 @@
     "unitDir": "unit29_workflow_variables_conditions",
     "videoUrl": "https://drive.google.com/file/d/1U3GXypzMTWpxPnNoNVZUuG5EYMZk1yc4/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1U3GXypzMTWpxPnNoNVZUuG5EYMZk1yc4/preview",
-    "quizUrl": "./question_bank/unit29_workflow_variables_conditions/index.html",
-    "lessonUrl": "./units/unit29_workflow_variables_conditions/lesson.md",
-    "qaUrl": "./units/unit29_workflow_variables_conditions/qa_report.md",
+    "quizUrl": "question_bank/unit29_workflow_variables_conditions/index.html",
+    "lessonUrl": "units/unit29_workflow_variables_conditions/lesson.md",
+    "qaUrl": "units/unit29_workflow_variables_conditions/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -635,9 +656,9 @@
     "unitDir": "unit30_context_engineering_basics",
     "videoUrl": "https://drive.google.com/file/d/1UbioM-5RKNMpUTv694rcYzZQUh7D1QM3/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1UbioM-5RKNMpUTv694rcYzZQUh7D1QM3/preview",
-    "quizUrl": "./question_bank/unit30_context_engineering_basics/index.html",
-    "lessonUrl": "./units/unit30_context_engineering_basics/lesson.md",
-    "qaUrl": "./units/unit30_context_engineering_basics/qa_report.md",
+    "quizUrl": "question_bank/unit30_context_engineering_basics/index.html",
+    "lessonUrl": "units/unit30_context_engineering_basics/lesson.md",
+    "qaUrl": "units/unit30_context_engineering_basics/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -650,9 +671,9 @@
     "unitDir": "unit31_context_design_practice",
     "videoUrl": "https://drive.google.com/file/d/1KqdMKVorWDkhC_ZMJFnrVaPin-CQW5Rt/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1KqdMKVorWDkhC_ZMJFnrVaPin-CQW5Rt/preview",
-    "quizUrl": "./question_bank/unit31_context_design_practice/index.html",
-    "lessonUrl": "./units/unit31_context_design_practice/lesson.md",
-    "qaUrl": "./units/unit31_context_design_practice/qa_report.md",
+    "quizUrl": "question_bank/unit31_context_design_practice/index.html",
+    "lessonUrl": "units/unit31_context_design_practice/lesson.md",
+    "qaUrl": "units/unit31_context_design_practice/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -665,9 +686,9 @@
     "unitDir": "unit32_organization_culture",
     "videoUrl": "https://drive.google.com/file/d/1v6TiJxSxRamnSsex4y0o22VEqH9Vesht/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1v6TiJxSxRamnSsex4y0o22VEqH9Vesht/preview",
-    "quizUrl": "./question_bank/unit32_organization_culture/index.html",
-    "lessonUrl": "./units/unit32_organization_culture/lesson.md",
-    "qaUrl": "./units/unit32_organization_culture/qa_report.md",
+    "quizUrl": "question_bank/unit32_organization_culture/index.html",
+    "lessonUrl": "units/unit32_organization_culture/lesson.md",
+    "qaUrl": "units/unit32_organization_culture/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -680,9 +701,9 @@
     "unitDir": "unit33_organization_models",
     "videoUrl": "https://drive.google.com/file/d/19cmgtMphBCY-d1PsOpUhEQl_2EL4DaCw/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/19cmgtMphBCY-d1PsOpUhEQl_2EL4DaCw/preview",
-    "quizUrl": "./question_bank/unit33_organization_models/index.html",
-    "lessonUrl": "./units/unit33_organization_models/lesson.md",
-    "qaUrl": "./units/unit33_organization_models/qa_report.md",
+    "quizUrl": "question_bank/unit33_organization_models/index.html",
+    "lessonUrl": "units/unit33_organization_models/lesson.md",
+    "qaUrl": "units/unit33_organization_models/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -695,9 +716,9 @@
     "unitDir": "unit34_metrics_redesign",
     "videoUrl": "https://drive.google.com/file/d/15RkCmTtWBJnflgVuTmS4KduPJfx1KdMN/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/15RkCmTtWBJnflgVuTmS4KduPJfx1KdMN/preview",
-    "quizUrl": "./question_bank/unit34_metrics_redesign/index.html",
-    "lessonUrl": "./units/unit34_metrics_redesign/lesson.md",
-    "qaUrl": "./units/unit34_metrics_redesign/qa_report.md",
+    "quizUrl": "question_bank/unit34_metrics_redesign/index.html",
+    "lessonUrl": "units/unit34_metrics_redesign/lesson.md",
+    "qaUrl": "units/unit34_metrics_redesign/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -710,9 +731,9 @@
     "unitDir": "unit35_role_reskilling",
     "videoUrl": "https://drive.google.com/file/d/1hRRX67IfLJXEKkFvPuV6kKl2gcrO6F1Z/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1hRRX67IfLJXEKkFvPuV6kKl2gcrO6F1Z/preview",
-    "quizUrl": "./question_bank/unit35_role_reskilling/index.html",
-    "lessonUrl": "./units/unit35_role_reskilling/lesson.md",
-    "qaUrl": "./units/unit35_role_reskilling/qa_report.md",
+    "quizUrl": "question_bank/unit35_role_reskilling/index.html",
+    "lessonUrl": "units/unit35_role_reskilling/lesson.md",
+    "qaUrl": "units/unit35_role_reskilling/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -725,9 +746,9 @@
     "unitDir": "unit36_change_management",
     "videoUrl": "https://drive.google.com/file/d/14_tDWKNqX5G5tjIsYXm-9IDz-SX-fnA9/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/14_tDWKNqX5G5tjIsYXm-9IDz-SX-fnA9/preview",
-    "quizUrl": "./question_bank/unit36_change_management/index.html",
-    "lessonUrl": "./units/unit36_change_management/lesson.md",
-    "qaUrl": "./units/unit36_change_management/qa_report.md",
+    "quizUrl": "question_bank/unit36_change_management/index.html",
+    "lessonUrl": "units/unit36_change_management/lesson.md",
+    "qaUrl": "units/unit36_change_management/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -740,9 +761,9 @@
     "unitDir": "unit37_field_questions_stakeholders",
     "videoUrl": "https://drive.google.com/file/d/1pacW2T0oLhNHZ4t88u1l0yo4VydSXfqV/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1pacW2T0oLhNHZ4t88u1l0yo4VydSXfqV/preview",
-    "quizUrl": "./question_bank/unit37_field_questions_stakeholders/index.html",
-    "lessonUrl": "./units/unit37_field_questions_stakeholders/lesson.md",
-    "qaUrl": "./units/unit37_field_questions_stakeholders/qa_report.md",
+    "quizUrl": "question_bank/unit37_field_questions_stakeholders/index.html",
+    "lessonUrl": "units/unit37_field_questions_stakeholders/lesson.md",
+    "qaUrl": "units/unit37_field_questions_stakeholders/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -755,9 +776,9 @@
     "unitDir": "unit38_field_questions_responsibility",
     "videoUrl": "https://drive.google.com/file/d/1urY_zjdogjTrA19Dx85mCkJdUstHzkL_/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1urY_zjdogjTrA19Dx85mCkJdUstHzkL_/preview",
-    "quizUrl": "./question_bank/unit38_field_questions_responsibility/index.html",
-    "lessonUrl": "./units/unit38_field_questions_responsibility/lesson.md",
-    "qaUrl": "./units/unit38_field_questions_responsibility/qa_report.md",
+    "quizUrl": "question_bank/unit38_field_questions_responsibility/index.html",
+    "lessonUrl": "units/unit38_field_questions_responsibility/lesson.md",
+    "qaUrl": "units/unit38_field_questions_responsibility/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -770,9 +791,9 @@
     "unitDir": "unit39_five_d_discovery",
     "videoUrl": "https://drive.google.com/file/d/1arUmKC4OSshP8VO4vwVkhKpaE2sPW88q/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1arUmKC4OSshP8VO4vwVkhKpaE2sPW88q/preview",
-    "quizUrl": "./question_bank/unit39_five_d_discovery/index.html",
-    "lessonUrl": "./units/unit39_five_d_discovery/lesson.md",
-    "qaUrl": "./units/unit39_five_d_discovery/qa_report.md",
+    "quizUrl": "question_bank/unit39_five_d_discovery/index.html",
+    "lessonUrl": "units/unit39_five_d_discovery/lesson.md",
+    "qaUrl": "units/unit39_five_d_discovery/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -785,9 +806,9 @@
     "unitDir": "unit40_five_d_definition",
     "videoUrl": "https://drive.google.com/file/d/1kMdTBrSNk04aBTMPIAfyaIFwZ5s1DXMI/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1kMdTBrSNk04aBTMPIAfyaIFwZ5s1DXMI/preview",
-    "quizUrl": "./question_bank/unit40_five_d_definition/index.html",
-    "lessonUrl": "./units/unit40_five_d_definition/lesson.md",
-    "qaUrl": "./units/unit40_five_d_definition/qa_report.md",
+    "quizUrl": "question_bank/unit40_five_d_definition/index.html",
+    "lessonUrl": "units/unit40_five_d_definition/lesson.md",
+    "qaUrl": "units/unit40_five_d_definition/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -800,9 +821,9 @@
     "unitDir": "unit41_five_d_design",
     "videoUrl": "https://drive.google.com/file/d/1tksC27NPfB_0FVkX2JoqNMb9qySrU9Lh/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1tksC27NPfB_0FVkX2JoqNMb9qySrU9Lh/preview",
-    "quizUrl": "./question_bank/unit41_five_d_design/index.html",
-    "lessonUrl": "./units/unit41_five_d_design/lesson.md",
-    "qaUrl": "./units/unit41_five_d_design/qa_report.md",
+    "quizUrl": "question_bank/unit41_five_d_design/index.html",
+    "lessonUrl": "units/unit41_five_d_design/lesson.md",
+    "qaUrl": "units/unit41_five_d_design/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -815,9 +836,9 @@
     "unitDir": "unit42_five_d_development_poc",
     "videoUrl": "https://drive.google.com/file/d/1q4r0lqRDlbDIAO_I6GuItIoh7uPGUgFd/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1q4r0lqRDlbDIAO_I6GuItIoh7uPGUgFd/preview",
-    "quizUrl": "./question_bank/unit42_five_d_development_poc/index.html",
-    "lessonUrl": "./units/unit42_five_d_development_poc/lesson.md",
-    "qaUrl": "./units/unit42_five_d_development_poc/qa_report.md",
+    "quizUrl": "question_bank/unit42_five_d_development_poc/index.html",
+    "lessonUrl": "units/unit42_five_d_development_poc/lesson.md",
+    "qaUrl": "units/unit42_five_d_development_poc/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -830,9 +851,9 @@
     "unitDir": "unit43_five_d_deployment_scale",
     "videoUrl": "https://drive.google.com/file/d/1RQQCZpHjL5EdqazcumLD56qe4oMWUGlH/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/1RQQCZpHjL5EdqazcumLD56qe4oMWUGlH/preview",
-    "quizUrl": "./question_bank/unit43_five_d_deployment_scale/index.html",
-    "lessonUrl": "./units/unit43_five_d_deployment_scale/lesson.md",
-    "qaUrl": "./units/unit43_five_d_deployment_scale/qa_report.md",
+    "quizUrl": "question_bank/unit43_five_d_deployment_scale/index.html",
+    "lessonUrl": "units/unit43_five_d_deployment_scale/lesson.md",
+    "qaUrl": "units/unit43_five_d_deployment_scale/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -845,9 +866,9 @@
     "unitDir": "unit44_exam_final_review",
     "videoUrl": "https://drive.google.com/file/d/193TeVgIffH9bU3etuPyqkXQNb3GbOBPN/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/193TeVgIffH9bU3etuPyqkXQNb3GbOBPN/preview",
-    "quizUrl": "./question_bank/unit44_exam_final_review/index.html",
-    "lessonUrl": "./units/unit44_exam_final_review/lesson.md",
-    "qaUrl": "./units/unit44_exam_final_review/qa_report.md",
+    "quizUrl": "question_bank/unit44_exam_final_review/index.html",
+    "lessonUrl": "units/unit44_exam_final_review/lesson.md",
+    "qaUrl": "units/unit44_exam_final_review/qa_report.md",
     "status": "completed_drive_verified"
   },
   {
@@ -860,9 +881,9 @@
     "unitDir": "unit45_case_simulation",
     "videoUrl": "https://drive.google.com/file/d/15HUvms44dJO4vaHspdkAXQizn_ceym9n/view?usp=drivesdk",
     "videoPreviewUrl": "https://drive.google.com/file/d/15HUvms44dJO4vaHspdkAXQizn_ceym9n/preview",
-    "quizUrl": "./question_bank/unit45_case_simulation/index.html",
-    "lessonUrl": "./units/unit45_case_simulation/lesson.md",
-    "qaUrl": "./units/unit45_case_simulation/qa_report.md",
+    "quizUrl": "question_bank/unit45_case_simulation/index.html",
+    "lessonUrl": "units/unit45_case_simulation/lesson.md",
+    "qaUrl": "units/unit45_case_simulation/qa_report.md",
     "status": "completed_drive_verified"
   }
 ];

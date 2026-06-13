@@ -1,0 +1,4358 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>実践ケース問題100選 | AIエージェント・ストラテジスト</title>
+  <style>
+    :root { --bg:#f7f8fb; --panel:#fff; --ink:#172033; --muted:#66708a; --line:#e5e8f0; --brand:#3858ff; --brand2:#00a6a6; --soft:#eef2ff; --ok:#168456; --bad:#b42318; --warn:#b96b00; --shadow:0 18px 40px rgba(24,34,61,.10); --radius:24px; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif; color:var(--ink); background: radial-gradient(circle at top left, rgba(56,88,255,.16), transparent 34rem), radial-gradient(circle at top right, rgba(0,166,166,.14), transparent 30rem), var(--bg); line-height:1.75; }
+    a { color:inherit; }
+    .wrap { width:min(1180px, calc(100% - 32px)); margin:0 auto; }
+    header { padding:22px 0; position:sticky; top:0; z-index:10; backdrop-filter:blur(16px); background:rgba(247,248,251,.84); border-bottom:1px solid rgba(229,232,240,.9); }
+    .nav { display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .brand { display:flex; gap:12px; align-items:center; font-weight:900; }
+    .mark { width:42px; height:42px; border-radius:14px; display:grid; place-items:center; color:white; background:linear-gradient(135deg,var(--brand),var(--brand2)); box-shadow:var(--shadow); }
+    .navlinks { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
+    .pill { text-decoration:none; border:1px solid var(--line); background:rgba(255,255,255,.78); padding:9px 13px; border-radius:999px; color:var(--muted); font-size:13px; }
+    .hero { padding:48px 0 24px; }
+    .heroGrid { display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:stretch; }
+    .panel,.heroCard,.caseCard { background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .heroCard { padding:32px; overflow:hidden; position:relative; }
+    .eyebrow { color:var(--brand); font-weight:900; font-size:14px; }
+    h1 { margin:8px 0 0; font-size:clamp(30px,5vw,56px); line-height:1.12; letter-spacing:-.04em; }
+    h2 { margin:0; font-size:clamp(24px,3vw,34px); letter-spacing:-.03em; }
+    h3 { margin:10px 0 8px; font-size:20px; line-height:1.45; }
+    .lead,.muted { color:var(--muted); }
+    .lead { margin:18px 0 0; font-size:clamp(15px,2.2vw,18px); max-width:760px; }
+    .ctaRow { display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+    .btn { appearance:none; border:0; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; padding:12px 16px; border-radius:14px; font:inherit; font-weight:850; text-decoration:none; cursor:pointer; transition:.15s ease; }
+    .btn:hover { transform:translateY(-1px); }
+    .btnPrimary { background:linear-gradient(135deg,var(--brand),#243bd1); color:white; box-shadow:0 14px 28px rgba(56,88,255,.22); }
+    .btnGhost { background:white; color:var(--ink); border:1px solid var(--line); }
+    .btnSoft { background:var(--soft); color:#243bd1; }
+    .stats { padding:20px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:18px; padding:16px; min-width:0; }
+    .stat b { display:block; font-size:30px; line-height:1.05; }
+    section { padding:24px 0; }
+    .sectionTitle { display:flex; justify-content:space-between; align-items:flex-end; gap:14px; margin-bottom:14px; }
+    .pathGrid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .pathStep { padding:18px; border-radius:20px; background:white; border:1px solid var(--line); min-width:0; }
+    .pathStep strong { display:block; font-size:16px; }
+    .toolbar { padding:18px; display:grid; grid-template-columns:1fr auto auto auto; gap:12px; align-items:center; }
+    input,select,textarea { width:100%; min-height:46px; border:1px solid var(--line); border-radius:14px; background:white; padding:0 14px; font:inherit; color:var(--ink); }
+    textarea { min-height:90px; padding:12px 14px; resize:vertical; }
+    .categoryChips { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+    .chip { border:1px solid var(--line); background:white; border-radius:999px; padding:9px 12px; cursor:pointer; font:inherit; color:var(--muted); }
+    .chip.active { background:var(--soft); color:#243bd1; border-color:rgba(56,88,255,.28); font-weight:850; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .caseCard { padding:20px; min-width:0; display:flex; flex-direction:column; gap:12px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .badge { display:inline-flex; align-items:center; border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:999px; padding:5px 9px; font-size:12px; font-weight:750; }
+    .typeBadge { background:var(--soft); color:#243bd1; border-color:rgba(56,88,255,.22); }
+    .scenario { padding:14px; background:#fbfcff; border:1px solid var(--line); border-radius:16px; }
+    .choices { display:grid; gap:10px; }
+    .choice { text-align:left; border:1px solid var(--line); background:white; border-radius:15px; padding:12px; font:inherit; cursor:pointer; min-height:48px; }
+    .choice.correct { border-color:rgba(22,132,86,.45); background:rgba(22,132,86,.08); color:#0c6843; font-weight:850; }
+    .choice.wrong { border-color:rgba(180,35,24,.35); background:rgba(180,35,24,.06); color:#8a1c14; }
+    .answerBox { display:none; border:1px solid var(--line); background:#fff; border-radius:16px; padding:14px; }
+    .answerBox.open { display:block; }
+    .whyList { margin:8px 0 0; padding-left:20px; color:var(--muted); }
+    .reflection { border-top:1px dashed var(--line); padding-top:12px; }
+    .reflection ul { margin:8px 0; padding-left:20px; }
+    .caseFooter { display:flex; flex-wrap:wrap; gap:10px; margin-top:auto; }
+    .empty { grid-column:1/-1; padding:40px; text-align:center; color:var(--muted); }
+    footer { padding:36px 0 50px; color:var(--muted); font-size:13px; }
+    @media (max-width: 980px) { .heroGrid,.grid { grid-template-columns:1fr; } .pathGrid { grid-template-columns:repeat(2,minmax(0,1fr)); } .toolbar { grid-template-columns:1fr; } }
+    @media (max-width: 620px) { .wrap { width:min(100% - 22px,1180px); } header { position:static; padding-top:16px; } .nav { align-items:flex-start; } .navlinks { display:none; } .hero { padding-top:24px; } .heroCard { padding:22px; border-radius:22px; } .stats { grid-template-columns:1fr; padding:14px; } .stat b { font-size:24px; } .pathGrid { grid-template-columns:1fr; } .sectionTitle { align-items:flex-start; flex-direction:column; } .caseCard { padding:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><div class="mark">AI</div><div>実践ケース問題100選<br><span class="muted">AIエージェント・ストラテジスト</span></div></div>
+      <nav class="navlinks" aria-label="ナビゲーション">
+        <a class="pill" href="../index.html">ポータルへ戻る</a>
+        <a class="pill" href="#cases">ケース一覧</a>
+        <a class="pill" href="#howto">使い方</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="wrap hero">
+      <div class="heroGrid">
+        <div class="heroCard">
+          <div class="eyebrow">四択の次は、現場判断を鍛える</div>
+          <h1>実践ケース100問で<br>“使える理解”へ。</h1>
+          <p class="lead">正しい対応、不適切な対応、最初の一手、リスク、次に確認すべきことを混ぜたケーススタディです。解説と「自分の職場なら？」メモで、学習を実務へつなげます。</p>
+          <div class="ctaRow">
+            <a class="btn btnPrimary" href="#cases">ケースを解く</a>
+            <button class="btn btnGhost" id="randomTen">ランダム10問</button>
+            <button class="btn btnGhost" id="reviewWrong">間違い復習</button>
+          </div>
+        </div>
+        <aside class="panel stats" aria-label="ケース統計">
+          <div class="stat"><b>100</b><span>実践ケース</span></div>
+          <div class="stat"><b>10</b><span>カテゴリ</span></div>
+          <div class="stat"><b id="solvedCount">0</b><span>解答済み</span></div>
+          <div class="stat"><b id="correctRate">0%</b><span>正答率</span></div>
+          <div class="stat" style="grid-column:1/-1;"><b id="memoCount">0</b><span>自分用メモ</span></div>
+        </aside>
+      </div>
+    </div>
+
+    <section id="howto">
+      <div class="wrap">
+        <div class="sectionTitle"><h2>深く学ぶ流れ</h2><p class="muted">動画・四択の後に、現場判断へ進む</p></div>
+        <div class="pathGrid">
+          <div class="pathStep"><strong>1. 状況を読む</strong><span class="muted">部署・制約・情報状態を確認</span></div>
+          <div class="pathStep"><strong>2. 問題タイプを見る</strong><span class="muted">適切/不適切/最初の一手/リスク/次の確認</span></div>
+          <div class="pathStep"><strong>3. 解説で判断軸を確認</strong><span class="muted">なぜ他の選択肢が微妙かまで読む</span></div>
+          <div class="pathStep"><strong>4. 自分の職場に置き換える</strong><span class="muted">メモ欄に実務適用を書き残す</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cases">
+      <div class="wrap">
+        <div class="sectionTitle"><h2>ケース一覧</h2><p class="muted" id="resultCount">100件</p></div>
+        <div class="panel toolbar">
+          <input id="search" type="search" placeholder="部署・課題・タグで検索">
+          <select id="categoryFilter" aria-label="カテゴリ"><option value="all">すべてのカテゴリ</option></select>
+          <select id="typeFilter" aria-label="問題タイプ"><option value="all">すべての問題タイプ</option></select>
+          <select id="statusFilter" aria-label="状態"><option value="all">すべて</option><option value="unsolved">未解答</option><option value="correct">正解済み</option><option value="wrong">間違い</option><option value="memo">メモあり</option></select>
+        </div>
+        <div class="categoryChips" id="categoryChips"></div>
+        <div class="grid" id="caseGrid" style="margin-top:16px;"></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap">Generated: 2026-06-13 13:29 JST / Source: case_bank/data/cases.json / Type counts: {"choose_best": 40, "choose_wrong": 25, "choose_first_action": 15, "choose_highest_risk": 10, "choose_next_check": 10}</div></footer>
+  <script>
+    const CASES = [
+  {
+    "id": "C001",
+    "title": "営業日報の入力負荷",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは営業部を支援するAI導入担当です。営業部から「日報入力をAIで楽にしたい」と相談されました。現状は、入力項目が多く、マネージャーが読める粒度もばらついている。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "日報テンプレートと活用目的と現行フローを棚卸しし、入力時間と案件更新率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、日報テンプレートと活用目的や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、日報テンプレートと活用目的と業務の流れをそろえてから入力時間と案件更新率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、日報テンプレートと活用目的に相当する情報はどこにありますか？",
+      "営業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "入力時間と案件更新率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "営業部",
+      "日報テンプレート",
+      "業務整理",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C002",
+    "title": "問い合わせ分類の混乱",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたはカスタマーサポートを支援するAI導入担当です。カスタマーサポートから「問い合わせを自動で振り分けたい」と相談されました。現状は、カテゴリ名が担当者ごとに違い、過去履歴にも表記ゆれがある。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "カスタマーサポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、問い合わせ履歴と分類ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "問い合わせ履歴と分類ルールと現行フローを棚卸しし、一次分類の正確率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、問い合わせ履歴と分類ルールと業務の流れをそろえてから一次分類の正確率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、問い合わせ履歴と分類ルールに相当する情報はどこにありますか？",
+      "サポートリーダー以外に、最初に巻き込むべき人は誰ですか？",
+      "一次分類の正確率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "カスタマーサポート",
+      "問い合わせ履歴",
+      "業務整理",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C003",
+    "title": "請求確認の手戻り",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは経理部を支援するAI導入担当です。経理部から「請求書チェックをAIに任せたい」と相談されました。現状は、例外処理が口頭で共有され、チェック観点が明文化されていない。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "経理部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "請求チェックリストと現行フローを棚卸しし、差し戻し件数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、請求チェックリストや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、請求チェックリストと業務の流れをそろえてから差し戻し件数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、請求チェックリストに相当する情報はどこにありますか？",
+      "経理担当者以外に、最初に巻き込むべき人は誰ですか？",
+      "差し戻し件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "業務整理",
+      "経理部",
+      "課題発見",
+      "請求チェックリスト"
+    ]
+  },
+  {
+    "id": "C004",
+    "title": "採用候補者対応",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは人事部を支援するAI導入担当です。人事部から「候補者への案内を自動化したい」と相談されました。現状は、職種ごとに案内内容が違い、最新情報の所在が分かれています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "人事部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、採用FAQと職種別案内や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "採用FAQと職種別案内と現行フローを棚卸しし、返信待ち時間を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、採用FAQと職種別案内と業務の流れをそろえてから返信待ち時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、採用FAQと職種別案内に相当する情報はどこにありますか？",
+      "採用担当者以外に、最初に巻き込むべき人は誰ですか？",
+      "返信待ち時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "人事部",
+      "採用FAQ",
+      "業務整理",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C005",
+    "title": "現場報告の属人化",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは店舗運営部を支援するAI導入担当です。店舗運営部から「店舗からの報告をAIで要約したい」と相談されました。現状は、報告文の長さや表現が店舗ごとに大きく異なる。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "店舗運営部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "報告フォーマットと現行フローを棚卸しし、要約確認時間を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、報告フォーマットや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、報告フォーマットと業務の流れをそろえてから要約確認時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、報告フォーマットに相当する情報はどこにありますか？",
+      "エリアマネージャー以外に、最初に巻き込むべき人は誰ですか？",
+      "要約確認時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "報告フォーマット",
+      "店舗運営部",
+      "業務整理",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C006",
+    "title": "契約確認の遅延",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは法務部を支援するAI導入担当です。法務部から「契約書レビューの一次確認をAI化したい」と相談されました。現状は、契約類型とリスク基準が整理されていない。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "法務部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、契約類型別チェック観点や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "契約類型別チェック観点と現行フローを棚卸しし、一次確認の所要時間を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、契約類型別チェック観点と業務の流れをそろえてから一次確認の所要時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、契約類型別チェック観点に相当する情報はどこにありますか？",
+      "法務責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "一次確認の所要時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "契約類型別チェック観点",
+      "業務整理",
+      "法務部",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C007",
+    "title": "在庫問い合わせの集中",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは物流部を支援するAI導入担当です。物流部から「在庫確認をAIチャットで受けたい」と相談されました。現状は、基幹システムと現場メモの情報が一致しないことがある。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "物流部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "在庫データの更新ルールと現行フローを棚卸しし、回答一致率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、在庫データの更新ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、在庫データの更新ルールと業務の流れをそろえてから回答一致率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、在庫データの更新ルールに相当する情報はどこにありますか？",
+      "物流管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "回答一致率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "在庫データの更新ルール",
+      "業務整理",
+      "物流部",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C008",
+    "title": "稟議作成のばらつき",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは管理部を支援するAI導入担当です。管理部から「稟議書の下書きをAIに作らせたい」と相談されました。現状は、承認者が重視する観点が部署ごとに違う。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "管理部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、稟議テンプレートと承認基準や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "稟議テンプレートと承認基準と現行フローを棚卸しし、差し戻し率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、稟議テンプレートと承認基準と業務の流れをそろえてから差し戻し率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、稟議テンプレートと承認基準に相当する情報はどこにありますか？",
+      "承認者以外に、最初に巻き込むべき人は誰ですか？",
+      "差し戻し率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "業務整理",
+      "稟議テンプレート",
+      "管理部",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C009",
+    "title": "マニュアル探索の時間",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは情報システム部を支援するAI導入担当です。情報システム部から「社内マニュアルをAIで探せるようにしたい」と相談されました。現状は、ファイル名と内容が一致せず、古い版も残っている。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "情報システム部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "マニュアル版管理と現行フローを棚卸しし、検索成功率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、マニュアル版管理や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、マニュアル版管理と業務の流れをそろえてから検索成功率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、マニュアル版管理に相当する情報はどこにありますか？",
+      "情シス担当者以外に、最初に巻き込むべき人は誰ですか？",
+      "検索成功率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "マニュアル版管理",
+      "情報システム部",
+      "業務整理",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C010",
+    "title": "研修質問対応",
+    "category": "業務課題発見",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 12",
+      "Unit 13",
+      "Unit 15",
+      "Unit 39"
+    ],
+    "scenario": "あなたは教育担当を支援するAI導入担当です。教育担当から「受講者質問への回答をAIで支援したい」と相談されました。現状は、質問の背景知識に差があり、同じ回答では伝わりにくい。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "教育担当の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、研修FAQと受講者レベルや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "研修FAQと受講者レベルと現行フローを棚卸しし、再質問率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、研修FAQと受講者レベルと業務の流れをそろえてから再質問率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、研修FAQと受講者レベルに相当する情報はどこにありますか？",
+      "講師以外に、最初に巻き込むべき人は誰ですか？",
+      "再質問率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "As-Is/To-Be",
+      "教育担当",
+      "業務整理",
+      "研修FAQ",
+      "課題発見"
+    ]
+  },
+  {
+    "id": "C011",
+    "title": "月次レポート作成",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「月次レポートを自動で作りたい」と相談されました。現状は、データ取得、加工、コメント作成、配布まで複数手順がある。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "経営企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、月次レポート工程や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "月次レポート工程と現行フローを棚卸しし、作成時間と修正回数を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、月次レポート工程と業務の流れをそろえてから作成時間と修正回数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、月次レポート工程に相当する情報はどこにありますか？",
+      "経営企画責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "作成時間と修正回数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "月次レポート工程",
+      "経営企画",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C012",
+    "title": "メール返信補助",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは営業部を支援するAI導入担当です。営業部から「定型メールをAIに返信させたい」と相談されました。現状は、相手先や契約状況によって文面判断が必要です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "メール種別と承認条件と現行フローを棚卸しし、返信品質評価を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、メール種別と承認条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、メール種別と承認条件と業務の流れをそろえてから返信品質評価で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、メール種別と承認条件に相当する情報はどこにありますか？",
+      "営業担当以外に、最初に巻き込むべき人は誰ですか？",
+      "返信品質評価を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "メール種別",
+      "営業部",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C013",
+    "title": "経費精算確認",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは管理部を支援するAI導入担当です。管理部から「経費精算をAIで確認したい」と相談されました。現状は、領収書、規程、例外承認の照合が必要です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "管理部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、経費規程と例外ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "経費規程と例外ルールと現行フローを棚卸しし、確認工数を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、経費規程と例外ルールと業務の流れをそろえてから確認工数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、経費規程と例外ルールに相当する情報はどこにありますか？",
+      "管理部長以外に、最初に巻き込むべき人は誰ですか？",
+      "確認工数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "管理部",
+      "経費規程",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C014",
+    "title": "商談準備",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは営業企画を支援するAI導入担当です。営業企画から「商談前の企業調査をAIに任せたい」と相談されました。現状は、公開情報と社内履歴を組み合わせる必要があります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "調査観点と出典ルールと現行フローを棚卸しし、準備時間を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、調査観点と出典ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、調査観点と出典ルールと業務の流れをそろえてから準備時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、調査観点と出典ルールに相当する情報はどこにありますか？",
+      "営業マネージャー以外に、最初に巻き込むべき人は誰ですか？",
+      "準備時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "営業企画",
+      "自律性",
+      "調査観点",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C015",
+    "title": "シフト調整",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは店舗運営を支援するAI導入担当です。店舗運営から「シフト調整をAIで自動化したい」と相談されました。現状は、希望、スキル、労務制約、急な欠勤を考慮します。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "店舗運営の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、シフト制約条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "シフト制約条件と現行フローを棚卸しし、調整回数を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、シフト制約条件と業務の流れをそろえてから調整回数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、シフト制約条件に相当する情報はどこにありますか？",
+      "店長以外に、最初に巻き込むべき人は誰ですか？",
+      "調整回数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "シフト制約条件",
+      "店舗運営",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C016",
+    "title": "FAQ応答",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「FAQ応答をAIエージェントに任せたい」と相談されました。現状は、回答だけでなく必要に応じてチケット起票も必要です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "FAQと起票条件と現行フローを棚卸しし、一次解決率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、FAQと起票条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、FAQと起票条件と業務の流れをそろえてから一次解決率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、FAQと起票条件に相当する情報はどこにありますか？",
+      "サポート責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "一次解決率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "FAQ",
+      "エージェント",
+      "サポート",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C017",
+    "title": "議事録からタスク化",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたはプロジェクト管理を支援するAI導入担当です。プロジェクト管理から「会議内容からタスクを自動抽出したい」と相談されました。現状は、決定事項と検討事項が会話の中に混在しています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "プロジェクト管理の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、議事録ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "議事録ルールと現行フローを棚卸しし、タスク抽出精度を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、議事録ルールと業務の流れをそろえてからタスク抽出精度で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、議事録ルールに相当する情報はどこにありますか？",
+      "PM以外に、最初に巻き込むべき人は誰ですか？",
+      "タスク抽出精度を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "プロジェクト管理",
+      "自律性",
+      "議事録ルール",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C018",
+    "title": "採用スクリーニング",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは人事を支援するAI導入担当です。人事から「応募書類の確認をAIで効率化したい」と相談されました。現状は、評価基準の公平性と説明可能性が求められます。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "人事の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "評価基準表と現行フローを棚卸しし、レビュー時間を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、評価基準表や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、評価基準表と業務の流れをそろえてからレビュー時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、評価基準表に相当する情報はどこにありますか？",
+      "人事責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "レビュー時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "人事",
+      "自律性",
+      "評価基準表",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C019",
+    "title": "障害一次対応",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは情報システムを支援するAI導入担当です。情報システムから「社内IT問い合わせをAIで一次対応したい」と相談されました。現状は、権限付与や端末操作を伴うケースがあります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "情報システムの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、対応範囲とエスカレーション基準や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "対応範囲とエスカレーション基準と現行フローを棚卸しし、自己解決率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、対応範囲とエスカレーション基準と業務の流れをそろえてから自己解決率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、対応範囲とエスカレーション基準に相当する情報はどこにありますか？",
+      "情シス責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "自己解決率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "対応範囲",
+      "情報システム",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C020",
+    "title": "見積作成",
+    "category": "AIエージェント適用判断",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 04",
+      "Unit 05",
+      "Unit 07",
+      "Unit 09"
+    ],
+    "scenario": "あなたは営業管理を支援するAI導入担当です。営業管理から「見積書作成をAIで補助したい」と相談されました。現状は、価格表、個別値引き、承認条件の参照が必要です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業管理の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "価格表と承認条件と現行フローを棚卸しし、見積ミス率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、価格表と承認条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、価格表と承認条件と業務の流れをそろえてから見積ミス率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、価格表と承認条件に相当する情報はどこにありますか？",
+      "営業管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "見積ミス率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "エージェント",
+      "価格表",
+      "営業管理",
+      "自律性",
+      "適用判断"
+    ]
+  },
+  {
+    "id": "C021",
+    "title": "古いFAQの混在",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「FAQをRAGで参照させたい」と相談されました。現状は、旧版FAQと新版FAQが同じフォルダに残っています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "FAQの版管理と現行フローを棚卸しし、誤回答率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、FAQの版管理や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、FAQの版管理と業務の流れをそろえてから誤回答率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、FAQの版管理に相当する情報はどこにありますか？",
+      "ナレッジ管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "誤回答率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "FAQの版管理",
+      "RAG",
+      "サポート",
+      "ナレッジ",
+      "検索"
+    ]
+  },
+  {
+    "id": "C022",
+    "title": "議事録検索",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは開発部を支援するAI導入担当です。開発部から「過去議事録から決定理由を探したい」と相談されました。現状は、議事録のタイトルだけでは内容が判断できません。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "開発部の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、議事録メタデータや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "議事録メタデータと現行フローを棚卸しし、検索ヒット精度を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、議事録メタデータと業務の流れをそろえてから検索ヒット精度で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、議事録メタデータに相当する情報はどこにありますか？",
+      "開発リーダー以外に、最初に巻き込むべき人は誰ですか？",
+      "検索ヒット精度を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "検索",
+      "議事録メタデータ",
+      "開発部"
+    ]
+  },
+  {
+    "id": "C023",
+    "title": "規程回答",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは人事労務を支援するAI導入担当です。人事労務から「就業規則への質問にAIで答えたい」と相談されました。現状は、例外規程や改定履歴の扱いが曖昧です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "人事労務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "規程本文と改定履歴と現行フローを棚卸しし、回答根拠提示率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、規程本文と改定履歴や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、規程本文と改定履歴と業務の流れをそろえてから回答根拠提示率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、規程本文と改定履歴に相当する情報はどこにありますか？",
+      "労務担当以外に、最初に巻き込むべき人は誰ですか？",
+      "回答根拠提示率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "人事労務",
+      "検索",
+      "規程本文"
+    ]
+  },
+  {
+    "id": "C024",
+    "title": "製品仕様検索",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは営業支援を支援するAI導入担当です。営業支援から「製品仕様をAIに答えさせたい」と相談されました。現状は、仕様書、価格表、販促資料の内容に差があります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業支援の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、製品資料の正本や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "製品資料の正本と現行フローを棚卸しし、回答一致率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、製品資料の正本と業務の流れをそろえてから回答一致率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、製品資料の正本に相当する情報はどこにありますか？",
+      "商品企画以外に、最初に巻き込むべき人は誰ですか？",
+      "回答一致率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "営業支援",
+      "検索",
+      "製品資料の正本"
+    ]
+  },
+  {
+    "id": "C025",
+    "title": "社内手順書",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたはバックオフィスを支援するAI導入担当です。バックオフィスから「手順書をチャットで検索したい」と相談されました。現状は、部署ごとのローカル手順が残っています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "バックオフィスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "手順書の正本管理と現行フローを棚卸しし、手順遵守率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、手順書の正本管理や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、手順書の正本管理と業務の流れをそろえてから手順遵守率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、手順書の正本管理に相当する情報はどこにありますか？",
+      "業務管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "手順遵守率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "バックオフィス",
+      "手順書の正本管理",
+      "検索"
+    ]
+  },
+  {
+    "id": "C026",
+    "title": "顧客別ルール",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは営業事務を支援するAI導入担当です。営業事務から「顧客別対応ルールをAIに確認させたい」と相談されました。現状は、顧客情報には権限差と機密度があります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業事務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、顧客別ルールと権限や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "顧客別ルールと権限と現行フローを棚卸しし、確認時間を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、顧客別ルールと権限と業務の流れをそろえてから確認時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、顧客別ルールと権限に相当する情報はどこにありますか？",
+      "営業事務責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "確認時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "営業事務",
+      "検索",
+      "顧客別ルール"
+    ]
+  },
+  {
+    "id": "C027",
+    "title": "技術問い合わせ",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは技術サポートを支援するAI導入担当です。技術サポートから「過去対応から回答候補を出したい」と相談されました。現状は、過去回答には暫定対応と恒久対応が混在しています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "技術サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "対応履歴の分類と現行フローを棚卸しし、再オープン率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、対応履歴の分類や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、対応履歴の分類と業務の流れをそろえてから再オープン率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、対応履歴の分類に相当する情報はどこにありますか？",
+      "技術責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "再オープン率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "対応履歴の分類",
+      "技術サポート",
+      "検索"
+    ]
+  },
+  {
+    "id": "C028",
+    "title": "研修教材検索",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは教育担当を支援するAI導入担当です。教育担当から「教材から必要箇所を探したい」と相談されました。現状は、スライド、動画台本、補足資料が別管理です。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "教育担当の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、教材メタデータや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "教材メタデータと現行フローを棚卸しし、該当箇所到達時間を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、教材メタデータと業務の流れをそろえてから該当箇所到達時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、教材メタデータに相当する情報はどこにありますか？",
+      "講座設計者以外に、最初に巻き込むべき人は誰ですか？",
+      "該当箇所到達時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "教材メタデータ",
+      "教育担当",
+      "検索"
+    ]
+  },
+  {
+    "id": "C029",
+    "title": "法務ナレッジ",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは法務を支援するAI導入担当です。法務から「契約レビュー観点を検索したい」と相談されました。現状は、案件種別ごとの判断理由が文章中に埋もれています。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "法務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "レビュー観点タグと現行フローを棚卸しし、観点漏れ件数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、レビュー観点タグや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、レビュー観点タグと業務の流れをそろえてから観点漏れ件数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、レビュー観点タグに相当する情報はどこにありますか？",
+      "法務担当以外に、最初に巻き込むべき人は誰ですか？",
+      "観点漏れ件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "レビュー観点タグ",
+      "検索",
+      "法務"
+    ]
+  },
+  {
+    "id": "C030",
+    "title": "障害ナレッジ",
+    "category": "RAG・ナレッジ活用",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 16",
+      "Unit 17",
+      "Unit 18",
+      "Unit 19"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「障害対応手順をAIで案内したい」と相談されました。現状は、古い回避策が検索上位に出ることがあります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、障害手順の有効期限や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "障害手順の有効期限と現行フローを棚卸しし、一次復旧時間を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、障害手順の有効期限と業務の流れをそろえてから一次復旧時間で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、障害手順の有効期限に相当する情報はどこにありますか？",
+      "運用担当以外に、最初に巻き込むべき人は誰ですか？",
+      "一次復旧時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "RAG",
+      "ナレッジ",
+      "情シス",
+      "検索",
+      "障害手順の有効期限"
+    ]
+  },
+  {
+    "id": "C031",
+    "title": "要約の粒度",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「長い資料をAIに要約させたい」と相談されました。現状は、役員向けと実務担当向けで必要な粒度が違います。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "経営企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、要約目的と読者や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "要約目的と読者と現行フローを棚卸しし、修正回数を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、要約目的と読者と業務の流れをそろえてから修正回数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、要約目的と読者に相当する情報はどこにありますか？",
+      "資料作成者以外に、最初に巻き込むべき人は誰ですか？",
+      "修正回数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "指示設計",
+      "経営企画",
+      "要約目的"
+    ]
+  },
+  {
+    "id": "C032",
+    "title": "メール文面",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「顧客メールの下書きをAIに作らせたい」と相談されました。現状は、丁寧さ、禁止表現、次アクションが案件ごとに違います。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "営業の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "文面ルールと現行フローを棚卸しし、承認修正率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、文面ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、文面ルールと業務の流れをそろえてから承認修正率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、文面ルールに相当する情報はどこにありますか？",
+      "営業担当以外に、最初に巻き込むべき人は誰ですか？",
+      "承認修正率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "営業",
+      "指示設計",
+      "文面ルール"
+    ]
+  },
+  {
+    "id": "C033",
+    "title": "FAQ回答トーン",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「回答文のトーンを統一したい」と相談されました。現状は、謝罪、案内、確認依頼の使い分けが難しい。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、応対トーン基準や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "応対トーン基準と現行フローを棚卸しし、品質評価を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、応対トーン基準と業務の流れをそろえてから品質評価で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、応対トーン基準に相当する情報はどこにありますか？",
+      "品質管理担当以外に、最初に巻き込むべき人は誰ですか？",
+      "品質評価を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "サポート",
+      "プロンプト",
+      "応対トーン基準",
+      "指示設計"
+    ]
+  },
+  {
+    "id": "C034",
+    "title": "分析観点",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたはマーケティングを支援するAI導入担当です。マーケティングから「アンケート自由回答を分析したい」と相談されました。現状は、分類観点を指定しないと一般的な要約になります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "マーケティングの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "分析軸と現行フローを棚卸しし、示唆採用数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、分析軸や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、分析軸と業務の流れをそろえてから示唆採用数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、分析軸に相当する情報はどこにありますか？",
+      "マーケ責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "示唆採用数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "マーケティング",
+      "分析軸",
+      "指示設計"
+    ]
+  },
+  {
+    "id": "C035",
+    "title": "議事録タスク",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたはPMOを支援するAI導入担当です。PMOから「議事録からTODOを抽出したい」と相談されました。現状は、担当者名、期限、未決事項を区別する必要があります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "PMOの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、抽出ルールや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "抽出ルールと現行フローを棚卸しし、タスク漏れ率を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、抽出ルールと業務の流れをそろえてからタスク漏れ率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、抽出ルールに相当する情報はどこにありますか？",
+      "PM以外に、最初に巻き込むべき人は誰ですか？",
+      "タスク漏れ率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PMO",
+      "コンテキスト",
+      "プロンプト",
+      "抽出ルール",
+      "指示設計"
+    ]
+  },
+  {
+    "id": "C036",
+    "title": "レビュー観点",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは法務を支援するAI導入担当です。法務から「契約書の気になる点を出したい」と相談されました。現状は、リスクの重要度と根拠条文を分けたいです。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "法務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "レビュー観点テンプレートと現行フローを棚卸しし、観点の再現性を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、レビュー観点テンプレートや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、レビュー観点テンプレートと業務の流れをそろえてから観点の再現性で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、レビュー観点テンプレートに相当する情報はどこにありますか？",
+      "法務担当以外に、最初に巻き込むべき人は誰ですか？",
+      "観点の再現性を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "レビュー観点テンプレート",
+      "指示設計",
+      "法務"
+    ]
+  },
+  {
+    "id": "C037",
+    "title": "チャットボット制約",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「社内ボットに禁止事項を守らせたい」と相談されました。現状は、権限外回答や断定表現を避けたいです。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、回答ポリシーや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "回答ポリシーと現行フローを棚卸しし、逸脱件数を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、回答ポリシーと業務の流れをそろえてから逸脱件数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、回答ポリシーに相当する情報はどこにありますか？",
+      "情シス管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "逸脱件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "回答ポリシー",
+      "情シス",
+      "指示設計"
+    ]
+  },
+  {
+    "id": "C038",
+    "title": "企画書作成",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは新規事業を支援するAI導入担当です。新規事業から「企画書のたたきをAIに作らせたい」と相談されました。現状は、市場、顧客、収益性の観点が抜けやすい。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "新規事業の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "企画書構成と現行フローを棚卸しし、レビュー指摘数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、企画書構成や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、企画書構成と業務の流れをそろえてからレビュー指摘数で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、企画書構成に相当する情報はどこにありますか？",
+      "事業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "レビュー指摘数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "企画書構成",
+      "指示設計",
+      "新規事業"
+    ]
+  },
+  {
+    "id": "C039",
+    "title": "コード説明",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは開発を支援するAI導入担当です。開発から「コード変更点を説明させたい」と相談されました。現状は、読み手が非エンジニアの場合もあります。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "開発の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、説明対象と粒度や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "説明対象と粒度と現行フローを棚卸しし、理解度評価を指標に小さく検証してから展開範囲を決める"
+    ],
+    "answerIndex": 3,
+    "explanation": "この場面では、いきなり導入するより、説明対象と粒度と業務の流れをそろえてから理解度評価で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、説明対象と粒度に相当する情報はどこにありますか？",
+      "開発リーダー以外に、最初に巻き込むべき人は誰ですか？",
+      "理解度評価を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "プロンプト",
+      "指示設計",
+      "説明対象",
+      "開発"
+    ]
+  },
+  {
+    "id": "C040",
+    "title": "研修フィードバック",
+    "category": "プロンプト・指示設計",
+    "type": "choose_best",
+    "typeLabel": "最も適切な対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 03",
+      "Unit 05",
+      "Unit 30",
+      "Unit 31"
+    ],
+    "scenario": "あなたは教育を支援するAI導入担当です。教育から「受講者回答にコメントしたい」と相談されました。現状は、否定しすぎず、次の学習行動につなげたい。",
+    "question": "この状況で最も適切な対応はどれですか？",
+    "choices": [
+      "教育の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "フィードバック方針と現行フローを棚卸しし、再提出改善率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、フィードバック方針や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "この場面では、いきなり導入するより、フィードバック方針と業務の流れをそろえてから再提出改善率で検証することが重要です。小さく試すことで、効果とリスクを同時に確認できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、フィードバック方針に相当する情報はどこにありますか？",
+      "講師以外に、最初に巻き込むべき人は誰ですか？",
+      "再提出改善率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "コンテキスト",
+      "フィードバック方針",
+      "プロンプト",
+      "指示設計",
+      "教育"
+    ]
+  },
+  {
+    "id": "C041",
+    "title": "承認前チェック",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは管理部を支援するAI導入担当です。管理部から「稟議前チェックを自動化したい」と相談されました。現状は、金額や案件種別で承認ルートが変わります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "承認条件と現行フローを棚卸しし、差し戻し率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、承認条件や運用ルールは利用状況を見ながら後で整える",
+      "管理責任者に確認し、目的・制約・承認条件の正本を1枚に整理する",
+      "管理部の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて承認条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、承認条件に相当する情報はどこにありますか？",
+      "管理責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "差し戻し率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "承認条件",
+      "管理部",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C042",
+    "title": "問い合わせ起票",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「メールからチケットを自動起票したい」と相談されました。現状は、緊急度と担当チームを判定する必要があります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "起票ルールと現行フローを棚卸しし、初動時間を指標に小さく検証してから展開範囲を決める",
+      "サポート責任者に確認し、目的・制約・起票ルールの正本を1枚に整理する",
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、起票ルールや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて起票ルールや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、起票ルールに相当する情報はどこにありますか？",
+      "サポート責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "初動時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "サポート",
+      "ワークフロー",
+      "自動化",
+      "起票ルール"
+    ]
+  },
+  {
+    "id": "C043",
+    "title": "定例資料更新",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「毎週の数字更新を自動化したい」と相談されました。現状は、データ取得失敗時の扱いが決まっていません。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "更新手順と例外処理と現行フローを棚卸しし、更新ミス件数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、更新手順と例外処理や運用ルールは利用状況を見ながら後で整える",
+      "企画担当に確認し、目的・制約・更新手順と例外処理の正本を1枚に整理する",
+      "経営企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて更新手順と例外処理や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、更新手順と例外処理に相当する情報はどこにありますか？",
+      "企画担当以外に、最初に巻き込むべき人は誰ですか？",
+      "更新ミス件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "更新手順",
+      "経営企画",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C044",
+    "title": "採用連絡",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは人事を支援するAI導入担当です。人事から「面接日程案内を自動化したい」と相談されました。現状は、候補者都合と面接官予定を調整します。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "日程調整条件と現行フローを棚卸しし、調整往復数を指標に小さく検証してから展開範囲を決める",
+      "採用担当に確認し、目的・制約・日程調整条件の正本を1枚に整理する",
+      "人事の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、日程調整条件や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて日程調整条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、日程調整条件に相当する情報はどこにありますか？",
+      "採用担当以外に、最初に巻き込むべき人は誰ですか？",
+      "調整往復数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "人事",
+      "日程調整条件",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C045",
+    "title": "在庫アラート",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは物流を支援するAI導入担当です。物流から「在庫不足を自動通知したい」と相談されました。現状は、商品別に閾値と通知先が違います。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "在庫閾値ルールと現行フローを棚卸しし、欠品予兆検知を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、在庫閾値ルールや運用ルールは利用状況を見ながら後で整える",
+      "物流担当に確認し、目的・制約・在庫閾値ルールの正本を1枚に整理する",
+      "物流の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて在庫閾値ルールや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、在庫閾値ルールに相当する情報はどこにありますか？",
+      "物流担当以外に、最初に巻き込むべき人は誰ですか？",
+      "欠品予兆検知を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "在庫閾値ルール",
+      "物流",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C046",
+    "title": "経費アラート",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは経理を支援するAI導入担当です。経理から「規程違反っぽい申請を検出したい」と相談されました。現状は、判断が曖昧な申請は人の確認が必要です。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "規程違反条件と現行フローを棚卸しし、確認時間を指標に小さく検証してから展開範囲を決める",
+      "経理責任者に確認し、目的・制約・規程違反条件の正本を1枚に整理する",
+      "経理の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、規程違反条件や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて規程違反条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、規程違反条件に相当する情報はどこにありますか？",
+      "経理責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "確認時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "経理",
+      "自動化",
+      "規程違反条件"
+    ]
+  },
+  {
+    "id": "C047",
+    "title": "商談後フォロー",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「商談後メールとCRM更新を自動化したい」と相談されました。現状は、商談内容により送る資料が変わります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "フォロー分岐条件と現行フローを棚卸しし、フォロー漏れを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、フォロー分岐条件や運用ルールは利用状況を見ながら後で整える",
+      "営業マネージャーに確認し、目的・制約・フォロー分岐条件の正本を1枚に整理する",
+      "営業の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させてフォロー分岐条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、フォロー分岐条件に相当する情報はどこにありますか？",
+      "営業マネージャー以外に、最初に巻き込むべき人は誰ですか？",
+      "フォロー漏れを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "フォロー分岐条件",
+      "ワークフロー",
+      "営業",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C048",
+    "title": "障害通知",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「障害検知後の連絡を自動化したい」と相談されました。現状は、影響範囲が未確定な段階で連絡が必要です。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "通知テンプレートと現行フローを棚卸しし、初報時間を指標に小さく検証してから展開範囲を決める",
+      "運用責任者に確認し、目的・制約・通知テンプレートの正本を1枚に整理する",
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、通知テンプレートや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて通知テンプレートや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、通知テンプレートに相当する情報はどこにありますか？",
+      "運用責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "初報時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "情シス",
+      "自動化",
+      "通知テンプレート"
+    ]
+  },
+  {
+    "id": "C049",
+    "title": "レビュー依頼",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは開発を支援するAI導入担当です。開発から「PR内容からレビュー担当を提案したい」と相談されました。現状は、専門領域と負荷の両方を考慮します。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "担当割当ルールと現行フローを棚卸しし、レビュー待ち時間を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、担当割当ルールや運用ルールは利用状況を見ながら後で整える",
+      "開発リーダーに確認し、目的・制約・担当割当ルールの正本を1枚に整理する",
+      "開発の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて担当割当ルールや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、担当割当ルールに相当する情報はどこにありますか？",
+      "開発リーダー以外に、最初に巻き込むべき人は誰ですか？",
+      "レビュー待ち時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "ワークフロー",
+      "担当割当ルール",
+      "自動化",
+      "開発"
+    ]
+  },
+  {
+    "id": "C050",
+    "title": "研修リマインド",
+    "category": "ワークフロー自動化",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 26",
+      "Unit 27",
+      "Unit 28",
+      "Unit 29"
+    ],
+    "scenario": "あなたは教育を支援するAI導入担当です。教育から「未受講者へ自動リマインドしたい」と相談されました。現状は、役職や締切により文面を変えたいです。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "リマインド条件と現行フローを棚卸しし、受講完了率を指標に小さく検証してから展開範囲を決める",
+      "教育担当に確認し、目的・制約・リマインド条件の正本を1枚に整理する",
+      "教育の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、リマインド条件や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させてリマインド条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、リマインド条件に相当する情報はどこにありますか？",
+      "教育担当以外に、最初に巻き込むべき人は誰ですか？",
+      "受講完了率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "HITL",
+      "リマインド条件",
+      "ワークフロー",
+      "教育",
+      "自動化"
+    ]
+  },
+  {
+    "id": "C051",
+    "title": "CRM連携",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「CRMから情報を取得して回答したい」と相談されました。現状は、顧客ごとに閲覧権限が異なります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "CRM権限設計と現行フローを棚卸しし、参照ミス率を指標に小さく検証してから展開範囲を決める",
+      "営業管理者に確認し、目的・制約・CRM権限設計の正本を1枚に整理する",
+      "営業の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、CRM権限設計や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させてCRM権限設計や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、CRM権限設計に相当する情報はどこにありますか？",
+      "営業管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "参照ミス率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "CRM権限設計",
+      "MCP",
+      "ツール連携",
+      "営業"
+    ]
+  },
+  {
+    "id": "C052",
+    "title": "カレンダー連携",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは人事を支援するAI導入担当です。人事から「面接日程を自動調整したい」と相談されました。現状は、外部候補者と社内面接官の予定を扱います。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "カレンダー連携範囲と現行フローを棚卸しし、調整完了時間を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、カレンダー連携範囲や運用ルールは利用状況を見ながら後で整える",
+      "採用担当に確認し、目的・制約・カレンダー連携範囲の正本を1枚に整理する",
+      "人事の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させてカレンダー連携範囲や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、カレンダー連携範囲に相当する情報はどこにありますか？",
+      "採用担当以外に、最初に巻き込むべき人は誰ですか？",
+      "調整完了時間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "カレンダー連携範囲",
+      "ツール連携",
+      "人事"
+    ]
+  },
+  {
+    "id": "C053",
+    "title": "チケット連携",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「問い合わせからチケット更新まで行いたい」と相談されました。現状は、誤ってクローズすると業務影響があります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "チケット操作権限と現行フローを棚卸しし、誤更新件数を指標に小さく検証してから展開範囲を決める",
+      "情シス責任者に確認し、目的・制約・チケット操作権限の正本を1枚に整理する",
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、チケット操作権限や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させてチケット操作権限や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、チケット操作権限に相当する情報はどこにありますか？",
+      "情シス責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "誤更新件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "チケット操作権限",
+      "ツール連携",
+      "情シス"
+    ]
+  },
+  {
+    "id": "C054",
+    "title": "ストレージ検索",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは管理部を支援するAI導入担当です。管理部から「社内ファイルを横断検索したい」と相談されました。現状は、部署限定資料と全社資料が混在しています。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "フォルダ権限と現行フローを棚卸しし、権限逸脱ゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、フォルダ権限や運用ルールは利用状況を見ながら後で整える",
+      "情報管理者に確認し、目的・制約・フォルダ権限の正本を1枚に整理する",
+      "管理部の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させてフォルダ権限や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、フォルダ権限に相当する情報はどこにありますか？",
+      "情報管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "権限逸脱ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "ツール連携",
+      "フォルダ権限",
+      "管理部"
+    ]
+  },
+  {
+    "id": "C055",
+    "title": "チャット通知",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたはPMOを支援するAI導入担当です。PMOから「進捗遅延をチャットに通知したい」と相談されました。現状は、通知が多すぎると現場が見なくなります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "通知条件と現行フローを棚卸しし、有効通知率を指標に小さく検証してから展開範囲を決める",
+      "PMに確認し、目的・制約・通知条件の正本を1枚に整理する",
+      "PMOの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、通知条件や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて通知条件や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、通知条件に相当する情報はどこにありますか？",
+      "PM以外に、最初に巻き込むべき人は誰ですか？",
+      "有効通知率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "PMO",
+      "ツール連携",
+      "通知条件"
+    ]
+  },
+  {
+    "id": "C056",
+    "title": "BI連携",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「BIの数値をAIが説明するようにしたい」と相談されました。現状は、指標定義を知らないと誤った説明になります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "指標定義書と現行フローを棚卸しし、説明正確率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、指標定義書や運用ルールは利用状況を見ながら後で整える",
+      "データ担当に確認し、目的・制約・指標定義書の正本を1枚に整理する",
+      "経営企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて指標定義書や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、指標定義書に相当する情報はどこにありますか？",
+      "データ担当以外に、最初に巻き込むべき人は誰ですか？",
+      "説明正確率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "ツール連携",
+      "指標定義書",
+      "経営企画"
+    ]
+  },
+  {
+    "id": "C057",
+    "title": "メール送信",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは営業支援を支援するAI導入担当です。営業支援から「AIがメール送信まで行うようにしたい」と相談されました。現状は、宛先や添付間違いの影響が大きいです。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "送信前確認ルールと現行フローを棚卸しし、誤送信ゼロを指標に小さく検証してから展開範囲を決める",
+      "営業責任者に確認し、目的・制約・送信前確認ルールの正本を1枚に整理する",
+      "営業支援の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、送信前確認ルールや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて送信前確認ルールや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、送信前確認ルールに相当する情報はどこにありますか？",
+      "営業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "誤送信ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "ツール連携",
+      "営業支援",
+      "送信前確認ルール"
+    ]
+  },
+  {
+    "id": "C058",
+    "title": "SFA更新",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「商談メモからSFAを更新したい」と相談されました。現状は、確定情報と推測情報が混ざっています。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "更新項目定義と現行フローを棚卸しし、更新差し戻し率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、更新項目定義や運用ルールは利用状況を見ながら後で整える",
+      "営業企画に確認し、目的・制約・更新項目定義の正本を1枚に整理する",
+      "営業の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて更新項目定義や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、更新項目定義に相当する情報はどこにありますか？",
+      "営業企画以外に、最初に巻き込むべき人は誰ですか？",
+      "更新差し戻し率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "ツール連携",
+      "営業",
+      "更新項目定義"
+    ]
+  },
+  {
+    "id": "C059",
+    "title": "勤怠連携",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたは労務を支援するAI導入担当です。労務から「勤怠異常をAIで確認したい」と相談されました。現状は、個人情報と労務判断が関わります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "勤怠データ権限と現行フローを棚卸しし、確認漏れ件数を指標に小さく検証してから展開範囲を決める",
+      "労務責任者に確認し、目的・制約・勤怠データ権限の正本を1枚に整理する",
+      "労務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、勤怠データ権限や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて勤怠データ権限や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、勤怠データ権限に相当する情報はどこにありますか？",
+      "労務責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "確認漏れ件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "MCP",
+      "ツール連携",
+      "労務",
+      "勤怠データ権限"
+    ]
+  },
+  {
+    "id": "C060",
+    "title": "ナレッジ投稿",
+    "category": "ツール連携",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 08",
+      "Unit 27",
+      "Unit 28",
+      "Unit 30"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「解決済みチケットからFAQを作りたい」と相談されました。現状は、未確認情報を公開すると混乱します。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "FAQ公開承認と現行フローを棚卸しし、公開後修正率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、FAQ公開承認や運用ルールは利用状況を見ながら後で整える",
+      "ナレッジ担当に確認し、目的・制約・FAQ公開承認の正本を1枚に整理する",
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させてFAQ公開承認や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、FAQ公開承認に相当する情報はどこにありますか？",
+      "ナレッジ担当以外に、最初に巻き込むべき人は誰ですか？",
+      "公開後修正率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "API",
+      "FAQ公開承認",
+      "MCP",
+      "サポート",
+      "ツール連携"
+    ]
+  },
+  {
+    "id": "C061",
+    "title": "個人情報を含む問い合わせ",
+    "category": "セキュリティ・権限",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「顧客情報を含む問い合わせをAIで要約したい」と相談されました。現状は、個人情報や契約情報が本文に含まれることがあります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "個人情報取扱ルールと現行フローを棚卸しし、漏えいゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、個人情報取扱ルールや運用ルールは利用状況を見ながら後で整える",
+      "情報管理責任者に確認し、目的・制約・個人情報取扱ルールの正本を1枚に整理する",
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて個人情報取扱ルールや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、個人情報取扱ルールに相当する情報はどこにありますか？",
+      "情報管理責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "漏えいゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "サポート",
+      "セキュリティ",
+      "個人情報取扱ルール",
+      "権限"
+    ]
+  },
+  {
+    "id": "C062",
+    "title": "管理者権限の操作",
+    "category": "セキュリティ・権限",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「AIにアカウント権限付与を任せたい」と相談されました。現状は、権限付与は業務影響が大きく監査も必要です。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "権限申請フローと現行フローを棚卸しし、不正付与ゼロを指標に小さく検証してから展開範囲を決める",
+      "情シス責任者に確認し、目的・制約・権限申請フローの正本を1枚に整理する",
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、権限申請フローや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて権限申請フローや運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、権限申請フローに相当する情報はどこにありますか？",
+      "情シス責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "不正付与ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "情シス",
+      "権限",
+      "権限申請フロー"
+    ]
+  },
+  {
+    "id": "C063",
+    "title": "社外AI利用",
+    "category": "セキュリティ・権限",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは企画部を支援するAI導入担当です。企画部から「外部AIに社内資料を貼って分析したい」と相談されました。現状は、資料には未公開情報が含まれます。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "外部AI利用基準と現行フローを棚卸しし、利用ルール遵守率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、外部AI利用基準や運用ルールは利用状況を見ながら後で整える",
+      "情報セキュリティ担当に確認し、目的・制約・外部AI利用基準の正本を1枚に整理する",
+      "企画部の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させて外部AI利用基準や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、外部AI利用基準に相当する情報はどこにありますか？",
+      "情報セキュリティ担当以外に、最初に巻き込むべき人は誰ですか？",
+      "利用ルール遵守率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "企画部",
+      "外部AI利用基準",
+      "権限"
+    ]
+  },
+  {
+    "id": "C064",
+    "title": "ログ保存",
+    "category": "セキュリティ・権限",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは法務を支援するAI導入担当です。法務から「AIの判断ログを保存したい」と相談されました。現状は、保存期間と閲覧権限が未定です。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "監査ログ設計と現行フローを棚卸しし、追跡可能率を指標に小さく検証してから展開範囲を決める",
+      "法務担当に確認し、目的・制約・監査ログ設計の正本を1枚に整理する",
+      "法務の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "最新AIツールを先に契約し、監査ログ設計や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 3,
+    "explanation": "不適切なのは、ツール選定を先行させて監査ログ設計や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、監査ログ設計に相当する情報はどこにありますか？",
+      "法務担当以外に、最初に巻き込むべき人は誰ですか？",
+      "追跡可能率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "権限",
+      "法務",
+      "監査ログ設計"
+    ]
+  },
+  {
+    "id": "C065",
+    "title": "部署別ナレッジ",
+    "category": "セキュリティ・権限",
+    "type": "choose_wrong",
+    "typeLabel": "不適切な対応を見抜く",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは全社を支援するAI導入担当です。全社から「部署ごとの資料をAI検索したい」と相談されました。現状は、検索結果に他部署の機密が出る懸念があります。",
+    "question": "次のうち、最も避けるべき不適切な対応はどれですか？",
+    "choices": [
+      "アクセス制御と現行フローを棚卸しし、権限逸脱ゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、アクセス制御や運用ルールは利用状況を見ながら後で整える",
+      "情報管理者に確認し、目的・制約・アクセス制御の正本を1枚に整理する",
+      "全社の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "不適切なのは、ツール選定を先行させてアクセス制御や運用ルールの整理を後回しにする進め方です。AI導入では、参照情報・責任・評価軸を先にそろえる必要があります。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、アクセス制御に相当する情報はどこにありますか？",
+      "情報管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "権限逸脱ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "アクセス制御",
+      "ガバナンス",
+      "セキュリティ",
+      "全社",
+      "権限"
+    ]
+  },
+  {
+    "id": "C066",
+    "title": "自動送信",
+    "category": "セキュリティ・権限",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「AIが顧客にメールを送る運用にしたい」と相談されました。現状は、誤送信や不適切表現が信用問題になります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "送信承認条件と現行フローを棚卸しし、誤送信ゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、送信承認条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "営業責任者に確認し、目的・制約・送信承認条件の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そして送信承認条件の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、送信承認条件に相当する情報はどこにありますか？",
+      "営業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "誤送信ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "営業",
+      "権限",
+      "送信承認条件"
+    ]
+  },
+  {
+    "id": "C067",
+    "title": "モデル学習利用",
+    "category": "セキュリティ・権限",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは開発を支援するAI導入担当です。開発から「入力データを学習に使う設定を確認したい」と相談されました。現状は、契約上のデータ利用条件が未確認です。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "AIサービス契約条件と現行フローを棚卸しし、設定確認率を指標に小さく検証してから展開範囲を決める",
+      "法務・情シスに確認し、目的・制約・AIサービス契約条件の正本を1枚に整理する",
+      "最新AIツールを先に契約し、AIサービス契約条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そしてAIサービス契約条件の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、AIサービス契約条件に相当する情報はどこにありますか？",
+      "法務・情シス以外に、最初に巻き込むべき人は誰ですか？",
+      "設定確認率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "AIサービス契約条件",
+      "ガバナンス",
+      "セキュリティ",
+      "権限",
+      "開発"
+    ]
+  },
+  {
+    "id": "C068",
+    "title": "委託先連携",
+    "category": "セキュリティ・権限",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは管理部を支援するAI導入担当です。管理部から「委託先にもAIボットを使わせたい」と相談されました。現状は、社外ユーザーの権限とログ管理が必要です。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "外部ユーザー権限と現行フローを棚卸しし、アクセス棚卸し率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、外部ユーザー権限や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "委託管理者に確認し、目的・制約・外部ユーザー権限の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そして外部ユーザー権限の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、外部ユーザー権限に相当する情報はどこにありますか？",
+      "委託管理者以外に、最初に巻き込むべき人は誰ですか？",
+      "アクセス棚卸し率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "外部ユーザー権限",
+      "権限",
+      "管理部"
+    ]
+  },
+  {
+    "id": "C069",
+    "title": "機密分類",
+    "category": "セキュリティ・権限",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは研究開発を支援するAI導入担当です。研究開発から「研究メモをAIで整理したい」と相談されました。現状は、機密度が高い情報と公開可能情報が混在しています。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "情報分類基準と現行フローを棚卸しし、分類精度を指標に小さく検証してから展開範囲を決める",
+      "研究責任者に確認し、目的・制約・情報分類基準の正本を1枚に整理する",
+      "最新AIツールを先に契約し、情報分類基準や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして情報分類基準の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、情報分類基準に相当する情報はどこにありますか？",
+      "研究責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "分類精度を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "情報分類基準",
+      "権限",
+      "研究開発"
+    ]
+  },
+  {
+    "id": "C070",
+    "title": "退職者アカウント",
+    "category": "セキュリティ・権限",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 10",
+      "Unit 18",
+      "Unit 20",
+      "Unit 38"
+    ],
+    "scenario": "あなたは人事・情シスを支援するAI導入担当です。人事・情シスから「退職時のアクセス停止をAIで支援したい」と相談されました。現状は、停止漏れは重大リスクになります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "退職時チェックリストと現行フローを棚卸しし、停止漏れゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、退職時チェックリストや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "情シス担当に確認し、目的・制約・退職時チェックリストの正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そして退職時チェックリストの正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、退職時チェックリストに相当する情報はどこにありますか？",
+      "情シス担当以外に、最初に巻き込むべき人は誰ですか？",
+      "停止漏れゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ガバナンス",
+      "セキュリティ",
+      "人事・情シス",
+      "権限",
+      "退職時チェックリスト"
+    ]
+  },
+  {
+    "id": "C071",
+    "title": "回答品質評価",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「AI回答の品質を測りたい」と相談されました。現状は、正解だけでなく言い回しや根拠提示も重要です。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "評価観点表と現行フローを棚卸しし、合格率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、評価観点表や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "品質管理担当に確認し、目的・制約・評価観点表の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そして評価観点表の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、評価観点表に相当する情報はどこにありますか？",
+      "品質管理担当以外に、最初に巻き込むべき人は誰ですか？",
+      "合格率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "サポート",
+      "品質保証",
+      "評価",
+      "評価観点表"
+    ]
+  },
+  {
+    "id": "C072",
+    "title": "PoC成功判定",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「AI導入PoCの成否を判断したい」と相談されました。現状は、現場の満足度と工数削減がずれる可能性があります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "成功指標と現行フローを棚卸しし、KPI達成率を指標に小さく検証してから展開範囲を決める",
+      "プロジェクト責任者に確認し、目的・制約・成功指標の正本を1枚に整理する",
+      "最新AIツールを先に契約し、成功指標や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして成功指標の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、成功指標に相当する情報はどこにありますか？",
+      "プロジェクト責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "KPI達成率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "品質保証",
+      "成功指標",
+      "経営企画",
+      "評価"
+    ]
+  },
+  {
+    "id": "C073",
+    "title": "誤回答テスト",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは法務を支援するAI導入担当です。法務から「契約レビューAIの誤りを検出したい」と相談されました。現状は、見落としの影響が大きく、例外パターンもあります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "テストケース集と現行フローを棚卸しし、重大見落としゼロを指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、テストケース集や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "法務責任者に確認し、目的・制約・テストケース集の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そしてテストケース集の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、テストケース集に相当する情報はどこにありますか？",
+      "法務責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "重大見落としゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "テストケース集",
+      "品質保証",
+      "法務",
+      "評価"
+    ]
+  },
+  {
+    "id": "C074",
+    "title": "運用モニタリング",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「AIボットの稼働後品質を見たい」と相談されました。現状は、利用数だけでは品質劣化に気づけません。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "監視指標と現行フローを棚卸しし、エスカレーション率を指標に小さく検証してから展開範囲を決める",
+      "運用担当に確認し、目的・制約・監視指標の正本を1枚に整理する",
+      "最新AIツールを先に契約し、監視指標や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして監視指標の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、監視指標に相当する情報はどこにありますか？",
+      "運用担当以外に、最初に巻き込むべき人は誰ですか？",
+      "エスカレーション率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "品質保証",
+      "情シス",
+      "監視指標",
+      "評価"
+    ]
+  },
+  {
+    "id": "C075",
+    "title": "人手レビュー",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは営業支援を支援するAI導入担当です。営業支援から「AI作成文を人が確認する基準を作りたい」と相談されました。現状は、すべて確認すると効率化効果が小さくなります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "レビュー条件と現行フローを棚卸しし、確認工数を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、レビュー条件や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "営業責任者に確認し、目的・制約・レビュー条件の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そしてレビュー条件の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、レビュー条件に相当する情報はどこにありますか？",
+      "営業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "確認工数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "レビュー条件",
+      "品質保証",
+      "営業支援",
+      "評価"
+    ]
+  },
+  {
+    "id": "C076",
+    "title": "評価データ作成",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは教育を支援するAI導入担当です。教育から「研修AIの採点精度を確認したい」と相談されました。現状は、模範解答が1つに限られない問題があります。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "採点ルーブリックと現行フローを棚卸しし、採点一致率を指標に小さく検証してから展開範囲を決める",
+      "講座設計者に確認し、目的・制約・採点ルーブリックの正本を1枚に整理する",
+      "最新AIツールを先に契約し、採点ルーブリックや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして採点ルーブリックの正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、採点ルーブリックに相当する情報はどこにありますか？",
+      "講座設計者以外に、最初に巻き込むべき人は誰ですか？",
+      "採点一致率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "品質保証",
+      "採点ルーブリック",
+      "教育",
+      "評価"
+    ]
+  },
+  {
+    "id": "C077",
+    "title": "A/B比較",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたはマーケを支援するAI導入担当です。マーケから「AI文案の効果を比較したい」と相談されました。現状は、開封率だけでは商談化への影響が分かりません。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "比較設計と現行フローを棚卸しし、商談化率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、比較設計や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "マーケ責任者に確認し、目的・制約・比較設計の正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そして比較設計の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、比較設計に相当する情報はどこにありますか？",
+      "マーケ責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "商談化率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "マーケ",
+      "品質保証",
+      "比較設計",
+      "評価"
+    ]
+  },
+  {
+    "id": "C078",
+    "title": "ガードレール検証",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは全社を支援するAI導入担当です。全社から「AIが禁止回答をしないか試したい」と相談されました。現状は、通常質問だけでは逸脱を見つけにくいです。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "禁止回答テストと現行フローを棚卸しし、逸脱ゼロを指標に小さく検証してから展開範囲を決める",
+      "ガバナンス担当に確認し、目的・制約・禁止回答テストの正本を1枚に整理する",
+      "最新AIツールを先に契約し、禁止回答テストや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして禁止回答テストの正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、禁止回答テストに相当する情報はどこにありますか？",
+      "ガバナンス担当以外に、最初に巻き込むべき人は誰ですか？",
+      "逸脱ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "全社",
+      "品質保証",
+      "禁止回答テスト",
+      "評価"
+    ]
+  },
+  {
+    "id": "C079",
+    "title": "改善サイクル",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「AI回答を継続改善したい」と相談されました。現状は、現場の修正内容がナレッジ更新に戻っていません。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "フィードバックループと現行フローを棚卸しし、改善反映率を指標に小さく検証してから展開範囲を決める",
+      "最新AIツールを先に契約し、フィードバックループや運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める",
+      "ナレッジ担当に確認し、目的・制約・フィードバックループの正本を1枚に整理する"
+    ],
+    "answerIndex": 3,
+    "explanation": "最初の一手は、目的と制約、そしてフィードバックループの正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、フィードバックループに相当する情報はどこにありますか？",
+      "ナレッジ担当以外に、最初に巻き込むべき人は誰ですか？",
+      "改善反映率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "サポート",
+      "フィードバックループ",
+      "品質保証",
+      "評価"
+    ]
+  },
+  {
+    "id": "C080",
+    "title": "ベンダー比較",
+    "category": "評価・品質保証",
+    "type": "choose_first_action",
+    "typeLabel": "最初の一手を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 42"
+    ],
+    "scenario": "あなたは購買を支援するAI導入担当です。購買から「複数AIツールを評価したい」と相談されました。現状は、デモの印象だけで選ぶと運用で差が出ます。",
+    "question": "AIツール選定や実装に入る前に、最初に行うべきことはどれですか？",
+    "choices": [
+      "比較評価表と現行フローを棚卸しし、要件適合率を指標に小さく検証してから展開範囲を決める",
+      "購買責任者に確認し、目的・制約・比較評価表の正本を1枚に整理する",
+      "最新AIツールを先に契約し、比較評価表や運用ルールは利用状況を見ながら後で整える",
+      "対象範囲を限定し、人が確認する条件を決めたうえでAI支援を始める"
+    ],
+    "answerIndex": 1,
+    "explanation": "最初の一手は、目的と制約、そして比較評価表の正本を確認することです。ここが曖昧なまま実装すると、後から評価や権限設計で手戻りが起きます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、比較評価表に相当する情報はどこにありますか？",
+      "購買責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "要件適合率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "PoC",
+      "品質保証",
+      "比較評価表",
+      "評価",
+      "購買"
+    ]
+  },
+  {
+    "id": "C081",
+    "title": "コスト試算",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは経営企画を支援するAI導入担当です。経営企画から「AI導入の費用対効果を示したい」と相談されました。現状は、ライセンス費だけでなく教育・運用費もかかります。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "コスト項目と現行フローを棚卸しし、投資回収期間を指標に小さく検証してから展開範囲を決める",
+      "コスト項目を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする",
+      "経営層に確認し、目的・制約・コスト項目の正本を1枚に整理する",
+      "経営企画の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "最もリスクが高いのは、権限確認なしでコスト項目をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、コスト項目に相当する情報はどこにありますか？",
+      "経営層以外に、最初に巻き込むべき人は誰ですか？",
+      "投資回収期間を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "コスト項目",
+      "導入計画",
+      "展開",
+      "経営企画"
+    ]
+  },
+  {
+    "id": "C082",
+    "title": "段階導入",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは全社DXを支援するAI導入担当です。全社DXから「全社に一気にAIを展開したい」と相談されました。現状は、部署ごとに業務成熟度とデータ整備状況が違います。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "展開ロードマップと現行フローを棚卸しし、定着率を指標に小さく検証してから展開範囲を決める",
+      "DX責任者に確認し、目的・制約・展開ロードマップの正本を1枚に整理する",
+      "全社DXの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "展開ロードマップを権限確認なしでAIに接続し、関係者全員が自由に使える状態にする"
+    ],
+    "answerIndex": 3,
+    "explanation": "最もリスクが高いのは、権限確認なしで展開ロードマップをAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、展開ロードマップに相当する情報はどこにありますか？",
+      "DX責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "定着率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "全社DX",
+      "導入計画",
+      "展開",
+      "展開ロードマップ"
+    ]
+  },
+  {
+    "id": "C083",
+    "title": "対象業務選定",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは業務改革を支援するAI導入担当です。業務改革から「最初のAI導入テーマを選びたい」と相談されました。現状は、候補が多く、効果とリスクの比較が必要です。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "テーマ選定基準と現行フローを棚卸しし、優先順位合意を指標に小さく検証してから展開範囲を決める",
+      "テーマ選定基準を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする",
+      "改革責任者に確認し、目的・制約・テーマ選定基準の正本を1枚に整理する",
+      "業務改革の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "最もリスクが高いのは、権限確認なしでテーマ選定基準をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、テーマ選定基準に相当する情報はどこにありますか？",
+      "改革責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "優先順位合意を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "テーマ選定基準",
+      "導入計画",
+      "展開",
+      "業務改革"
+    ]
+  },
+  {
+    "id": "C084",
+    "title": "教育費用",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは人事を支援するAI導入担当です。人事から「AI研修の投資対効果を説明したい」と相談されました。現状は、受講完了だけでは業務活用につながったか分かりません。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "教育KPIと現行フローを棚卸しし、活用件数を指標に小さく検証してから展開範囲を決める",
+      "人事責任者に確認し、目的・制約・教育KPIの正本を1枚に整理する",
+      "人事の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "教育KPIを権限確認なしでAIに接続し、関係者全員が自由に使える状態にする"
+    ],
+    "answerIndex": 3,
+    "explanation": "最もリスクが高いのは、権限確認なしで教育KPIをAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、教育KPIに相当する情報はどこにありますか？",
+      "人事責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "活用件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "人事",
+      "導入計画",
+      "展開",
+      "教育KPI"
+    ]
+  },
+  {
+    "id": "C085",
+    "title": "ベンダー契約",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは購買を支援するAI導入担当です。購買から「AIサービス契約を進めたい」と相談されました。現状は、従量課金とデータ利用条件の確認が必要です。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "契約評価表と現行フローを棚卸しし、想定外費用ゼロを指標に小さく検証してから展開範囲を決める",
+      "契約評価表を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする",
+      "購買担当に確認し、目的・制約・契約評価表の正本を1枚に整理する",
+      "購買の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "最もリスクが高いのは、権限確認なしで契約評価表をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、契約評価表に相当する情報はどこにありますか？",
+      "購買担当以外に、最初に巻き込むべき人は誰ですか？",
+      "想定外費用ゼロを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "契約評価表",
+      "導入計画",
+      "展開",
+      "購買"
+    ]
+  },
+  {
+    "id": "C086",
+    "title": "人員配置",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「AI導入後の人員計画を見直したい」と相談されました。現状は、削減だけを目的にすると現場協力が得にくいです。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "役割再設計と現行フローを棚卸しし、高付加価値業務比率を指標に小さく検証してから展開範囲を決める",
+      "サポート責任者に確認し、目的・制約・役割再設計の正本を1枚に整理する",
+      "サポートの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "役割再設計を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする"
+    ],
+    "answerIndex": 3,
+    "explanation": "最もリスクが高いのは、権限確認なしで役割再設計をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、役割再設計に相当する情報はどこにありますか？",
+      "サポート責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "高付加価値業務比率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "サポート",
+      "導入計画",
+      "展開",
+      "役割再設計"
+    ]
+  },
+  {
+    "id": "C087",
+    "title": "経営報告",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたはDX推進を支援するAI導入担当です。DX推進から「AI導入状況を経営会議に報告したい」と相談されました。現状は、利用数、品質、効果を分けて見せる必要があります。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "報告ダッシュボードと現行フローを棚卸しし、意思決定スピードを指標に小さく検証してから展開範囲を決める",
+      "報告ダッシュボードを権限確認なしでAIに接続し、関係者全員が自由に使える状態にする",
+      "DX担当に確認し、目的・制約・報告ダッシュボードの正本を1枚に整理する",
+      "DX推進の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "最もリスクが高いのは、権限確認なしで報告ダッシュボードをAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、報告ダッシュボードに相当する情報はどこにありますか？",
+      "DX担当以外に、最初に巻き込むべき人は誰ですか？",
+      "意思決定スピードを測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "DX推進",
+      "ROI",
+      "報告ダッシュボード",
+      "導入計画",
+      "展開"
+    ]
+  },
+  {
+    "id": "C088",
+    "title": "リスク予算",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは情シスを支援するAI導入担当です。情シスから「セキュリティ対策費を含めたい」と相談されました。現状は、便利さだけを強調すると必要な対策費が削られます。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "リスク対策項目と現行フローを棚卸しし、対策実施率を指標に小さく検証してから展開範囲を決める",
+      "CIOに確認し、目的・制約・リスク対策項目の正本を1枚に整理する",
+      "情シスの一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "リスク対策項目を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする"
+    ],
+    "answerIndex": 3,
+    "explanation": "最もリスクが高いのは、権限確認なしでリスク対策項目をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、リスク対策項目に相当する情報はどこにありますか？",
+      "CIO以外に、最初に巻き込むべき人は誰ですか？",
+      "対策実施率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "リスク対策項目",
+      "導入計画",
+      "展開",
+      "情シス"
+    ]
+  },
+  {
+    "id": "C089",
+    "title": "スモールスタート",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは中小企業を支援するAI導入担当です。中小企業から「小さくAI活用を始めたい」と相談されました。現状は、予算と担当者が限られています。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "最小実行範囲と現行フローを棚卸しし、初回成果までの日数を指標に小さく検証してから展開範囲を決める",
+      "最小実行範囲を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする",
+      "経営者に確認し、目的・制約・最小実行範囲の正本を1枚に整理する",
+      "中小企業の一部メンバーで試行し、失敗例と例外条件を集めて改善する"
+    ],
+    "answerIndex": 1,
+    "explanation": "最もリスクが高いのは、権限確認なしで最小実行範囲をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、最小実行範囲に相当する情報はどこにありますか？",
+      "経営者以外に、最初に巻き込むべき人は誰ですか？",
+      "初回成果までの日数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "中小企業",
+      "導入計画",
+      "展開",
+      "最小実行範囲"
+    ]
+  },
+  {
+    "id": "C090",
+    "title": "効果測定",
+    "category": "導入計画・ROI",
+    "type": "choose_highest_risk",
+    "typeLabel": "最もリスクが高い対応を選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 23",
+      "Unit 24",
+      "Unit 25",
+      "Unit 43"
+    ],
+    "scenario": "あなたは営業を支援するAI導入担当です。営業から「AI支援の売上効果を測りたい」と相談されました。現状は、売上は外部要因にも左右されます。",
+    "question": "この中で、最もリスクが高い進め方はどれですか？",
+    "choices": [
+      "測定設計と現行フローを棚卸しし、活動効率改善率を指標に小さく検証してから展開範囲を決める",
+      "営業責任者に確認し、目的・制約・測定設計の正本を1枚に整理する",
+      "営業の一部メンバーで試行し、失敗例と例外条件を集めて改善する",
+      "測定設計を権限確認なしでAIに接続し、関係者全員が自由に使える状態にする"
+    ],
+    "answerIndex": 3,
+    "explanation": "最もリスクが高いのは、権限確認なしで測定設計をAIに接続することです。情報漏えいや誤操作につながるため、アクセス制御とログ設計が先に必要です。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、測定設計に相当する情報はどこにありますか？",
+      "営業責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "活動効率改善率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ROI",
+      "営業",
+      "導入計画",
+      "展開",
+      "測定設計"
+    ]
+  },
+  {
+    "id": "C091",
+    "title": "利用が広がらない",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは全社を支援するAI導入担当です。全社から「AIツールを入れたが使われない」と相談されました。現状は、現場は何に使えばよいか分からない状態です。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "ユースケース集と現行フローを棚卸しし、週次利用率を指標に小さく検証してから展開範囲を決める",
+      "DX推進者に確認し、目的・制約・ユースケース集の正本を1枚に整理する",
+      "最新AIツールを先に契約し、ユースケース集や運用ルールは利用状況を見ながら後で整える",
+      "ユースケース集の更新責任者、利用権限、成功指標としての週次利用率を確認する"
+    ],
+    "answerIndex": 3,
+    "explanation": "次に確認すべきなのは、ユースケース集の更新責任、利用権限、週次利用率です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、ユースケース集に相当する情報はどこにありますか？",
+      "DX推進者以外に、最初に巻き込むべき人は誰ですか？",
+      "週次利用率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "ユースケース集",
+      "全社",
+      "変革",
+      "失敗対応",
+      "定着"
+    ]
+  },
+  {
+    "id": "C092",
+    "title": "現場の不安",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは営業部を支援するAI導入担当です。営業部から「AIで仕事が奪われると不安が出ている」と相談されました。現状は、目的が効率化だけに見えています。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "役割説明と現行フローを棚卸しし、参加率を指標に小さく検証してから展開範囲を決める",
+      "役割説明の更新責任者、利用権限、成功指標としての参加率を確認する",
+      "部門長に確認し、目的・制約・役割説明の正本を1枚に整理する",
+      "最新AIツールを先に契約し、役割説明や運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 1,
+    "explanation": "次に確認すべきなのは、役割説明の更新責任、利用権限、参加率です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、役割説明に相当する情報はどこにありますか？",
+      "部門長以外に、最初に巻き込むべき人は誰ですか？",
+      "参加率を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "営業部",
+      "変革",
+      "失敗対応",
+      "定着",
+      "役割説明"
+    ]
+  },
+  {
+    "id": "C093",
+    "title": "品質クレーム",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたはサポートを支援するAI導入担当です。サポートから「AI回答で顧客から指摘が出た」と相談されました。現状は、誰が確認し、どう改善するか決まっていません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "インシデント対応手順と現行フローを棚卸しし、再発件数を指標に小さく検証してから展開範囲を決める",
+      "品質責任者に確認し、目的・制約・インシデント対応手順の正本を1枚に整理する",
+      "最新AIツールを先に契約し、インシデント対応手順や運用ルールは利用状況を見ながら後で整える",
+      "インシデント対応手順の更新責任者、利用権限、成功指標としての再発件数を確認する"
+    ],
+    "answerIndex": 3,
+    "explanation": "次に確認すべきなのは、インシデント対応手順の更新責任、利用権限、再発件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、インシデント対応手順に相当する情報はどこにありますか？",
+      "品質責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "再発件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "インシデント対応手順",
+      "サポート",
+      "変革",
+      "失敗対応",
+      "定着"
+    ]
+  },
+  {
+    "id": "C094",
+    "title": "ルール未整備",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは全社を支援するAI導入担当です。全社から「部署ごとにAI利用ルールがばらばら」と相談されました。現状は、禁止事項と推奨例が共有されていません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "利用ガイドラインと現行フローを棚卸しし、違反件数を指標に小さく検証してから展開範囲を決める",
+      "利用ガイドラインの更新責任者、利用権限、成功指標としての違反件数を確認する",
+      "ガバナンス担当に確認し、目的・制約・利用ガイドラインの正本を1枚に整理する",
+      "最新AIツールを先に契約し、利用ガイドラインや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 1,
+    "explanation": "次に確認すべきなのは、利用ガイドラインの更新責任、利用権限、違反件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、利用ガイドラインに相当する情報はどこにありますか？",
+      "ガバナンス担当以外に、最初に巻き込むべき人は誰ですか？",
+      "違反件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "全社",
+      "利用ガイドライン",
+      "変革",
+      "失敗対応",
+      "定着"
+    ]
+  },
+  {
+    "id": "C095",
+    "title": "チャンピオン不足",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたはDX推進を支援するAI導入担当です。DX推進から「推進担当だけが頑張っている」と相談されました。現状は、各部署に相談役がいません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "推進体制と現行フローを棚卸しし、相談対応件数を指標に小さく検証してから展開範囲を決める",
+      "DX責任者に確認し、目的・制約・推進体制の正本を1枚に整理する",
+      "最新AIツールを先に契約し、推進体制や運用ルールは利用状況を見ながら後で整える",
+      "推進体制の更新責任者、利用権限、成功指標としての相談対応件数を確認する"
+    ],
+    "answerIndex": 3,
+    "explanation": "次に確認すべきなのは、推進体制の更新責任、利用権限、相談対応件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、推進体制に相当する情報はどこにありますか？",
+      "DX責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "相談対応件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "DX推進",
+      "変革",
+      "失敗対応",
+      "定着",
+      "推進体制"
+    ]
+  },
+  {
+    "id": "C096",
+    "title": "成功事例共有",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは人事を支援するAI導入担当です。人事から「AI活用事例を社内に広めたい」と相談されました。現状は、事例が個人の工夫に留まり再現されていません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "事例テンプレートと現行フローを棚卸しし、横展開数を指標に小さく検証してから展開範囲を決める",
+      "事例テンプレートの更新責任者、利用権限、成功指標としての横展開数を確認する",
+      "教育担当に確認し、目的・制約・事例テンプレートの正本を1枚に整理する",
+      "最新AIツールを先に契約し、事例テンプレートや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 1,
+    "explanation": "次に確認すべきなのは、事例テンプレートの更新責任、利用権限、横展開数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、事例テンプレートに相当する情報はどこにありますか？",
+      "教育担当以外に、最初に巻き込むべき人は誰ですか？",
+      "横展開数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "事例テンプレート",
+      "人事",
+      "変革",
+      "失敗対応",
+      "定着"
+    ]
+  },
+  {
+    "id": "C097",
+    "title": "過度な期待",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは経営層を支援するAI導入担当です。経営層から「AIなら何でもできるという期待がある」と相談されました。現状は、できることとできないことの線引きが必要です。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "期待値調整資料と現行フローを棚卸しし、手戻り件数を指標に小さく検証してから展開範囲を決める",
+      "DX推進者に確認し、目的・制約・期待値調整資料の正本を1枚に整理する",
+      "最新AIツールを先に契約し、期待値調整資料や運用ルールは利用状況を見ながら後で整える",
+      "期待値調整資料の更新責任者、利用権限、成功指標としての手戻り件数を確認する"
+    ],
+    "answerIndex": 3,
+    "explanation": "次に確認すべきなのは、期待値調整資料の更新責任、利用権限、手戻り件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、期待値調整資料に相当する情報はどこにありますか？",
+      "DX推進者以外に、最初に巻き込むべき人は誰ですか？",
+      "手戻り件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "変革",
+      "失敗対応",
+      "定着",
+      "期待値調整資料",
+      "経営層"
+    ]
+  },
+  {
+    "id": "C098",
+    "title": "現場改善の停滞",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "中級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは店舗を支援するAI導入担当です。店舗から「初期導入後に改善が止まった」と相談されました。現状は、フィードバックの集約先が決まっていません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "改善バックログと現行フローを棚卸しし、改善実施数を指標に小さく検証してから展開範囲を決める",
+      "改善バックログの更新責任者、利用権限、成功指標としての改善実施数を確認する",
+      "店舗責任者に確認し、目的・制約・改善バックログの正本を1枚に整理する",
+      "最新AIツールを先に契約し、改善バックログや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 1,
+    "explanation": "次に確認すべきなのは、改善バックログの更新責任、利用権限、改善実施数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、改善バックログに相当する情報はどこにありますか？",
+      "店舗責任者以外に、最初に巻き込むべき人は誰ですか？",
+      "改善実施数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "変革",
+      "失敗対応",
+      "定着",
+      "店舗",
+      "改善バックログ"
+    ]
+  },
+  {
+    "id": "C099",
+    "title": "責任分界",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "初級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは全社を支援するAI導入担当です。全社から「AIの判断ミス時の責任が曖昧」と相談されました。現状は、利用者、承認者、運用者の役割が混ざっています。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "責任分界表と現行フローを棚卸しし、判断迷い件数を指標に小さく検証してから展開範囲を決める",
+      "管理部に確認し、目的・制約・責任分界表の正本を1枚に整理する",
+      "最新AIツールを先に契約し、責任分界表や運用ルールは利用状況を見ながら後で整える",
+      "責任分界表の更新責任者、利用権限、成功指標としての判断迷い件数を確認する"
+    ],
+    "answerIndex": 3,
+    "explanation": "次に確認すべきなのは、責任分界表の更新責任、利用権限、判断迷い件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。",
+      "この選択肢が、このケースで最も問われている判断に合っています。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、責任分界表に相当する情報はどこにありますか？",
+      "管理部以外に、最初に巻き込むべき人は誰ですか？",
+      "判断迷い件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "全社",
+      "変革",
+      "失敗対応",
+      "定着",
+      "責任分界表"
+    ]
+  },
+  {
+    "id": "C100",
+    "title": "教育の継続",
+    "category": "社内定着・失敗対応",
+    "type": "choose_next_check",
+    "typeLabel": "次に確認すべきことを選ぶ",
+    "difficulty": "上級",
+    "relatedUnits": [
+      "Unit 32",
+      "Unit 33",
+      "Unit 36",
+      "Unit 37"
+    ],
+    "scenario": "あなたは教育を支援するAI導入担当です。教育から「初回研修後に活用が続かない」と相談されました。現状は、学習後に実務へ戻す仕組みがありません。",
+    "question": "次に確認すべき項目として最も重要なものはどれですか？",
+    "choices": [
+      "実務ミッションと現行フローを棚卸しし、実務適用件数を指標に小さく検証してから展開範囲を決める",
+      "実務ミッションの更新責任者、利用権限、成功指標としての実務適用件数を確認する",
+      "講師に確認し、目的・制約・実務ミッションの正本を1枚に整理する",
+      "最新AIツールを先に契約し、実務ミッションや運用ルールは利用状況を見ながら後で整える"
+    ],
+    "answerIndex": 1,
+    "explanation": "次に確認すべきなのは、実務ミッションの更新責任、利用権限、実務適用件数です。これにより、AIが参照する情報の信頼性と導入効果を判断できます。",
+    "whyOthers": [
+      "一部は有効ですが、目的・情報・権限・評価をそろえる観点が不足しています。",
+      "この選択肢が、このケースで最も問われている判断に合っています。",
+      "初期確認としては有効ですが、この設問で求める最終判断としてはまだ一歩手前です。",
+      "ツール導入を先行させ、業務・データ・運用ルールの整理を後回しにしている点が危険です。"
+    ],
+    "reflectionPrompts": [
+      "あなたの職場で、実務ミッションに相当する情報はどこにありますか？",
+      "講師以外に、最初に巻き込むべき人は誰ですか？",
+      "実務適用件数を測るために、今日から取れる小さな記録は何ですか？"
+    ],
+    "tags": [
+      "変革",
+      "失敗対応",
+      "定着",
+      "実務ミッション",
+      "教育"
+    ]
+  }
+];
+    const CATEGORIES = ["AIエージェント適用判断", "RAG・ナレッジ活用", "セキュリティ・権限", "ツール連携", "プロンプト・指示設計", "ワークフロー自動化", "導入計画・ROI", "業務課題発見", "社内定着・失敗対応", "評価・品質保証"];
+    const TYPE_LABELS = {"choose_best": "最も適切な対応を選ぶ", "choose_wrong": "不適切な対応を見抜く", "choose_first_action": "最初の一手を選ぶ", "choose_highest_risk": "最もリスクが高い対応を選ぶ", "choose_next_check": "次に確認すべきことを選ぶ"};
+    const STORAGE_KEY = 'sio-ai-agent-strategist-case-bank-v1';
+    const $ = (id) => document.getElementById(id);
+    let state = loadState();
+    let forcedIds = null;
+    function loadState() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { answers: {}, memos: {} }; } catch (_) { return { answers: {}, memos: {} }; } }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); updateStats(); }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function statusOf(c) { const a = state.answers[c.id]; if (!a) return 'unsolved'; return a.correct ? 'correct' : 'wrong'; }
+    function updateStats() { const answers = Object.values(state.answers); const solved = answers.length; const correct = answers.filter(a => a.correct).length; const memos = Object.values(state.memos).filter(v => String(v || '').trim()).length; $('solvedCount').textContent = solved; $('correctRate').textContent = solved ? `${Math.round(correct / solved * 100)}%` : '0%'; $('memoCount').textContent = memos; }
+    function initFilters() { CATEGORIES.forEach(cat => { const opt = document.createElement('option'); opt.value = cat; opt.textContent = cat; $('categoryFilter').appendChild(opt); }); Object.entries(TYPE_LABELS).forEach(([value,label]) => { const opt = document.createElement('option'); opt.value = value; opt.textContent = label; $('typeFilter').appendChild(opt); }); $('categoryChips').innerHTML = ['all', ...CATEGORIES].map(cat => `<button class="chip ${cat === 'all' ? 'active' : ''}" data-category="${escapeHtml(cat)}">${cat === 'all' ? 'すべて' : escapeHtml(cat)}</button>`).join(''); document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => { forcedIds = null; $('categoryFilter').value = btn.dataset.category; document.querySelectorAll('.chip').forEach(b => b.classList.toggle('active', b === btn)); renderCases(); })); }
+    function filteredCases() { const query = $('search').value.trim().toLowerCase(); const cat = $('categoryFilter').value; const type = $('typeFilter').value; const status = $('statusFilter').value; let list = CASES.filter(c => { const hay = `${c.id} ${c.title} ${c.category} ${c.typeLabel} ${c.difficulty} ${c.scenario} ${c.question} ${c.tags.join(' ')} ${c.relatedUnits.join(' ')}`.toLowerCase(); const st = statusOf(c); const memo = String(state.memos[c.id] || '').trim(); return (!forcedIds || forcedIds.has(c.id)) && (!query || hay.includes(query)) && (cat === 'all' || c.category === cat) && (type === 'all' || c.type === type) && (status === 'all' || status === st || (status === 'memo' && memo)); }); return list; }
+    function renderCases() { const list = filteredCases(); $('resultCount').textContent = `${list.length}件 / 100件`; if (!list.length) { $('caseGrid').innerHTML = '<div class="panel empty">条件に合うケースがありません。</div>'; updateStats(); return; } $('caseGrid').innerHTML = list.map(c => renderCase(c)).join(''); bindCaseEvents(); updateStats(); }
+    function renderCase(c) { const selected = state.answers[c.id]?.selectedIndex; const answered = Number.isInteger(selected); const correct = answered && selected === c.answerIndex; const memo = state.memos[c.id] || ''; return `<article class="caseCard" data-id="${c.id}"><div class="meta"><span class="badge">${c.id}</span><span class="badge">${escapeHtml(c.category)}</span><span class="badge typeBadge">${escapeHtml(c.typeLabel)}</span><span class="badge">${escapeHtml(c.difficulty)}</span><span class="badge">${answered ? (correct ? '正解済み' : '間違い') : '未解答'}</span></div><h3>${escapeHtml(c.title)}</h3><div class="scenario">${escapeHtml(c.scenario)}</div><strong>${escapeHtml(c.question)}</strong><div class="choices">${c.choices.map((choice, i) => `<button class="choice ${answered && i === c.answerIndex ? 'correct' : ''} ${answered && i === selected && i !== c.answerIndex ? 'wrong' : ''}" data-id="${c.id}" data-index="${i}"><b>${String.fromCharCode(65+i)}.</b> ${escapeHtml(choice)}</button>`).join('')}</div><div class="answerBox ${answered ? 'open' : ''}"><strong>${answered ? (correct ? '正解' : '不正解') : ''}：${String.fromCharCode(65 + c.answerIndex)} が正解</strong><p>${escapeHtml(c.explanation)}</p><details><summary>なぜ他の選択肢は微妙か</summary><ol class="whyList">${c.whyOthers.map((w,i) => `<li><b>${String.fromCharCode(65+i)}.</b> ${escapeHtml(w)}</li>`).join('')}</ol></details></div><div class="reflection"><strong>自分の職場なら？</strong><ul>${c.reflectionPrompts.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul><textarea data-memo="${c.id}" placeholder="ここに自分用メモを残す">${escapeHtml(memo)}</textarea></div><div class="caseFooter"><button class="btn btnGhost resetOne" data-id="${c.id}">この問題をリセット</button><span class="badge">関連: ${c.relatedUnits.map(escapeHtml).join(' / ')}</span></div></article>`; }
+    function bindCaseEvents() { document.querySelectorAll('.choice').forEach(btn => btn.addEventListener('click', () => { const c = CASES.find(x => x.id === btn.dataset.id); const selected = Number(btn.dataset.index); state.answers[c.id] = { selectedIndex: selected, correct: selected === c.answerIndex, answeredAt: new Date().toISOString() }; saveState(); renderCases(); })); document.querySelectorAll('[data-memo]').forEach(area => area.addEventListener('input', () => { state.memos[area.dataset.memo] = area.value; saveState(); })); document.querySelectorAll('.resetOne').forEach(btn => btn.addEventListener('click', () => { delete state.answers[btn.dataset.id]; saveState(); renderCases(); })); }
+    $('search').addEventListener('input', () => { forcedIds = null; renderCases(); }); $('categoryFilter').addEventListener('change', () => { forcedIds = null; document.querySelectorAll('.chip').forEach(b => b.classList.toggle('active', b.dataset.category === $('categoryFilter').value)); renderCases(); }); $('typeFilter').addEventListener('change', () => { forcedIds = null; renderCases(); }); $('statusFilter').addEventListener('change', () => { forcedIds = null; renderCases(); });
+    $('randomTen').addEventListener('click', () => { const shuffled = [...CASES].sort((a,b) => a.id.localeCompare(b.id)).sort(() => Math.random() - 0.5).slice(0,10); forcedIds = new Set(shuffled.map(c => c.id)); $('search').value=''; $('categoryFilter').value='all'; $('typeFilter').value='all'; $('statusFilter').value='all'; renderCases(); document.getElementById('cases').scrollIntoView({ behavior:'smooth' }); });
+    $('reviewWrong').addEventListener('click', () => { forcedIds = null; $('statusFilter').value='wrong'; renderCases(); document.getElementById('cases').scrollIntoView({ behavior:'smooth' }); });
+    initFilters(); renderCases();
+  </script>
+</body>
+</html>
