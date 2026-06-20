@@ -4,7 +4,7 @@
 - 生成対象: 44ユニット（[[Unit02]]〜[[Unit45]]）
 - PASS: 44
 - FAIL: 0
-- 生成時刻: 2026-06-13T09:52:07+09:00
+- 生成時刻: 2026-06-21T07:57:13+09:00
 
 ## 検証観点
 - 各Unit 20問
@@ -13,9 +13,6 @@
 - `explanation` / `point` / `tag` / `level` を保持
 - 削除済みフッター文言を含めない
 - 秘密情報パターンを含めない
-- CDP 390x844で全45HTMLを開き、横スクロール・初期描画・選択肢タップ後の解説表示を確認
-- 代表スクリーンショット: `qa/question_bank_mobile_20260613/unit02_genai_mechanism_cdp_390x844.png` / `unit23_ai_project_poc_cdp_390x844.png` / `unit45_case_simulation_cdp_390x844.png`
-- CDPメトリクス: `qa/question_bank_mobile_20260613/mobile_cdp_metrics.json`
 
 ## Unit別結果
 - [[Unit02]] `question_bank/unit02_genai_mechanism/index.html` / `question_bank/unit02_genai_mechanism/qa_report.md` / 20問 / PASS

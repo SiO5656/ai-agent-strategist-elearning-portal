@@ -11,8 +11,8 @@
 - 問題数: 20問
 - 形式: 四択 / 即時正誤判定 / 解説表示 / 正解・復習カウント / 検索 / タグ絞り込み / シャッフル
 - 素材: `units/unit26_automation_levels/lesson.md` / `quiz.md` / `exam_cards.md`
-- 素材抽出: quiz 0件 / exam_cards 0件 / lesson 42件
-- タグ: scene01 Chapter4の入…, scene02 段階導入の理由, scene03 Lv.1とLv.2, scene04 Lv.3ワークフロー, scene05 Lv.4自律型, 学習ゴール
+- 素材抽出: quiz 0件 / exam_cards 0件 / lesson 28件
+- タグ: scene01 Chapter4の入…, scene02 段階導入の理由, scene03 Lv.1とLv.2, scene04 Lv.3ワークフロー, scene05 Lv.4自律型, scene06 境界線の見分け方, scene07 提案書AIの四段階, scene08 Lv.2から始めるM…, 学習ゴール
 
 ## 検証結果
 - 静的検証: PASS
@@ -27,6 +27,6 @@
 - なし
 
 ## 生成時刻
-- 2026-06-13T09:52:07+09:00
+- 2026-06-21T07:57:13+09:00
 
 関連: [[Unit26]] / [[HTML問題集]] / [[四択問題]] / [[AIエージェント・ストラテジスト]]

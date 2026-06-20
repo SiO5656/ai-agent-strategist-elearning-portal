@@ -13,6 +13,7 @@ from typing import Any
 BASE = Path('/Users/clawuser/SiO-Brain/projects/ai-agent-strategist-course/elearning_v2')
 UNITS_DIR = BASE / 'units'
 QB_DIR = BASE / 'question_bank'
+OVERRIDE_DIR = QB_DIR / 'overrides'
 SUMMARY_QA = QB_DIR / 'qa_report.md'
 FORBIDDEN_FOOTER = ''.join([
     '保存先: question_bank/unit01_course_orientation/index.html',
@@ -306,6 +307,10 @@ def parse_lesson_entries(text: str) -> list[tuple[str, str, str]]:
         if not item or item.startswith('関連:') or item.startswith('Unit:') or item.startswith('タイトル:') or item.startswith('対象ページ:'):
             continue
         if current and current.lower() not in SKIP_HEADINGS and len(item) >= 5:
+            if len(item) < 10 and ':' not in item and '：' not in item:
+                continue
+            if len(item) <= 14 and not re.search(r'[。！？:：、]', item):
+                continue
             if len(item) > 130:
                 sentence = re.split(r'(?<=[。.!?？])', item)[0]
                 item = sentence if len(sentence) >= 5 else item
@@ -349,6 +354,51 @@ def make_options(correct_text: str, pool: list[str], desired_correct: int) -> tu
     return options, desired_correct
 
 
+def strip_links(text: str) -> str:
+    return re.sub(r'\[\[([^\]|]+)(?:\|[^\]]+)?\]\]', r'\1', text)
+
+
+def focus_from_answer(answer: str) -> str:
+    plain = strip_links(clean(answer))
+    plain = re.sub(r'^[・\-\s]+', '', plain)
+    if ':' in plain or '：' in plain:
+        term = re.split(r'[:：]', plain, maxsplit=1)[0].strip()
+        if 2 <= len(term) <= 28:
+            return term
+    for marker in ['について', 'では', 'は', 'を']:
+        if marker in plain:
+            term = plain.split(marker, 1)[0].strip('「」『』、。 ')
+            if 2 <= len(term) <= 28:
+                return term
+    parts = re.split(r'[、。,.\s]', plain)
+    for part in parts:
+        part = part.strip('「」『』 ')
+        if 2 <= len(part) <= 20:
+            return part
+    return 'この論点'
+
+
+def lesson_question(heading: str, answer: str, label: str) -> str:
+    heading = strip_links(clean(heading))
+    answer_plain = strip_links(clean(answer))
+    focus = focus_from_answer(answer_plain)
+    if 'このUnitで学ぶこと' in heading:
+        return f'{label}で中心に扱う実務判断として、最も適切なものはどれですか。'
+    if ':' in answer_plain or '：' in answer_plain:
+        return f'「{focus}」の説明・例として、最も適切なものはどれですか。'
+    if 'リスク' in answer_plain:
+        return f'「{heading}」で注意すべきリスクとして、最も適切なものはどれですか。'
+    if any(word in answer_plain for word in ['優先', '順序', 'まず', '段階']):
+        return f'「{heading}」の進め方として、最も適切なものはどれですか。'
+    if any(word in answer_plain for word in ['分け', '分類', '区別']):
+        return f'「{heading}」で分けて考えるべき点として、最も適切なものはどれですか。'
+    if any(word in answer_plain for word in ['確認', '修正', 'チェック']):
+        return f'「{heading}」で必要な確認・運用として、最も適切なものはどれですか。'
+    if len(focus) >= 2 and focus not in heading:
+        return f'「{heading}」における「{focus}」の説明として、最も適切なものはどれですか。'
+    return f'「{heading}」について、最も適切な説明はどれですか。'
+
+
 def generated_question(question: str, answer: str, pool: list[str], tag: str, level: str, idx: int, source: str, label: str) -> dict[str, Any]:
     options, correct = make_options(answer, pool, idx % 4)
     return {
@@ -371,6 +421,19 @@ def build_questions(unit_dir: Path, titles: dict[str, str]) -> tuple[str, list[d
     exam_text = (unit_dir / 'exam_cards.md').read_text(encoding='utf-8')
     title = extract_lesson_title(unit_dir, titles)
 
+    override_path = OVERRIDE_DIR / f'{unit_dir.name}.json'
+    if override_path.exists():
+        override_questions = json.loads(override_path.read_text(encoding='utf-8'))
+        final: list[dict[str, Any]] = []
+        for i, q in enumerate(override_questions):
+            q = dict(q)
+            q['id'] = f'u{num:02d}-{i+1:03d}'
+            q['tag'] = q.get('tag') or '確認'
+            q['level'] = q.get('level') or LEVELS[min(i // 8, 2)]
+            q['point'] = q.get('point') or q['options'][q['correct']]
+            final.append(q)
+        return title, final, {'quiz': 0, 'exam_entries': 0, 'lesson_entries': 0, 'override': len(final)}
+
     quiz_qs = parse_quiz(quiz_text, label, num)
     exam_entries = parse_exam_entries(exam_text)
     lesson_entries = parse_lesson_entries(lesson_text)
@@ -388,13 +451,15 @@ def build_questions(unit_dir: Path, titles: dict[str, str]) -> tuple[str, list[d
     for heading, answer, tag in lesson_entries:
         if len(qs) >= 20:
             break
-        question = f'{label}の「{heading}」で押さえるべき内容は？'
+        question = lesson_question(heading, answer, label)
         level = LEVELS[min(len(qs) // 8, 2)]
         qs.append(generated_question(question, answer, pool, tag or '講義ノート', level, len(qs), 'lesson.md', label))
 
     while len(qs) < 20:
         answer = pool[len(qs) % len(pool)] if pool else '業務課題、リスク、効果測定をセットで確認する'
-        qs.append(generated_question(f'{label}の要点として最も適切なものは？', answer, pool, '追加確認', '標準', len(qs), 'lesson.md', label))
+        focus = focus_from_answer(answer)
+        question = f'「{focus}」について、正しい説明として最も適切なものはどれですか。'
+        qs.append(generated_question(question, answer, pool, '追加確認', '標準', len(qs), 'lesson.md', label))
 
     final: list[dict[str, Any]] = []
     seen_questions: set[str] = set()
@@ -402,7 +467,17 @@ def build_questions(unit_dir: Path, titles: dict[str, str]) -> tuple[str, list[d
         q = dict(q)
         question = clean(q['question'])
         if question in seen_questions:
-            question = f'{question}（確認{i+1}）'
+            answer_focus = focus_from_answer(q['options'][q['correct']])
+            tag_label = strip_links(clean(q.get('tag') or 'この論点'))
+            if answer_focus and answer_focus not in question:
+                question = f'「{tag_label}」における「{answer_focus}」について、最も適切な説明はどれですか。'
+            else:
+                question = f'「{tag_label}」について、次に優先して確認すべき要点はどれですか。'
+        suffix_guard = 2
+        while question in seen_questions:
+            answer_focus = focus_from_answer(q['options'][q['correct']])
+            question = f'「{strip_links(clean(q.get("tag") or "この論点"))}」の要点{suffix_guard}: 「{answer_focus}」に関する正しい説明はどれですか。'
+            suffix_guard += 1
         seen_questions.add(question)
         q['id'] = f'u{num:02d}-{len(final)+1:03d}'
         q['question'] = question
